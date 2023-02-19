@@ -20,18 +20,26 @@ namespace Tanknarok.Menu
         [SerializeField] private Panel _uiRoom;
         [SerializeField] private GameObject _uiGame;
         
+        [SerializeField] private TMP_InputField _room;
+        
         private FusionLauncher.ConnectionStatus _status;
         
         private readonly IObservable<FusionLauncher.ConnectionStatus> _connectionStatusChangedEvent =
             MainSceneEvents.OnConnectionStatusChanged;
 
         /// <summary>
-        /// Методом OnNext() оповещает всех слушателей о смене GameMode
+        /// Методом OnNext() оповещает всех слушателей апдейте GameMode
         /// </summary>
-        private readonly IObserver<GameMode> _gameModeChangedBroadcaster = MainSceneEvents.GameModeChangedBroadcaster;
-
+        private readonly IObserver<GameMode> _gameModeUpdatedBroadcaster = MainSceneEvents.GameModeChangedBroadcaster;
+        /// <summary>
+        /// Методом OnNext() оповещает всех слушателей о входе в комнату
+        /// </summary>
         private readonly IObserver<Unit> _onEnterRoomBroadcaster = MainSceneEvents.OnEnterRoomBroadcaster;
 
+        /// <summary>
+        /// Методом OnNext() оповещает всех слушателей об обновлении имени комнаты
+        /// </summary>
+        private readonly IObserver<string> _onRoomNameBroadcaster = MainSceneEvents.OnRoomNameBroadcaster; 
         
         private IDisposable _connectionStatusChangedSubscription;
         
@@ -53,6 +61,9 @@ namespace Tanknarok.Menu
             CloseStartThenShowUiRoom();
         }
         
+        /// <summary>
+        /// Входим к сетевое лобби
+        /// </summary>
         public void OnEnterRoom()
         {
             Close(_uiRoom, out bool wasOpened);
@@ -71,6 +82,8 @@ namespace Tanknarok.Menu
             });
             Observable.EveryUpdate().Where(_ => _uiProgress.isShowing)
                 .Subscribe(_ => UpdateUI());
+            
+            _room.onValueChanged.AddListener(_=>_onRoomNameBroadcaster.OnNext(_room.text));
         }
 
         private void OnDestroy()
@@ -84,7 +97,7 @@ namespace Tanknarok.Menu
         /// <param name="gamemode"></param>
         private void BroadcastModeChanged(GameMode gamemode)
         {
-            _gameModeChangedBroadcaster.OnNext(gamemode);
+            _gameModeUpdatedBroadcaster.OnNext(gamemode);
         }
         
         private void CloseStartThenShowUiRoom()

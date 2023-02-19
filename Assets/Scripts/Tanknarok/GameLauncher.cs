@@ -22,7 +22,6 @@ namespace FusionExamples.Tanknarok
 		
 		[SerializeField] private GameManager _gameManagerPrefab;
 		[SerializeField] private Player _playerPrefab;
-		[SerializeField] private TMP_InputField _room;
 		[SerializeField] private Panel _uiProgress;
 
 		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
@@ -30,12 +29,14 @@ namespace FusionExamples.Tanknarok
 		
 		private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
 		private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
+		private readonly IObservable<string> _onRoomNameUpdate = MainSceneEvents.OnRoomNameUpdate;
 
 		private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
 		private FusionLauncher.ConnectionStatus _status; 
 		private GameMode _gameMode;
-		
+
+		private string _roomName;
 		
 		private void Awake()
 		{
@@ -46,6 +47,9 @@ namespace FusionExamples.Tanknarok
 
 			IDisposable onEnterRoomSubscription = _onEnterRoom.Subscribe(_ => OnEnterRoom());
 			_subscriptions.Add(onEnterRoomSubscription);
+
+			IDisposable onRoomNameUpdateSubscription = _onRoomNameUpdate.Subscribe(newText => _roomName = newText);
+			_subscriptions.Add(onRoomNameUpdateSubscription);
 		}
 
 		private void OnDestroy()
@@ -89,7 +93,7 @@ namespace FusionExamples.Tanknarok
 			LevelManager lm = FindObjectOfType<LevelManager>();
 			lm.launcher = launcher;
 
-			launcher.Launch(_gameMode, _room.text, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
+			launcher.Launch(_gameMode, _roomName, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
 		}
 		
 
