@@ -1,8 +1,12 @@
+using System;
 using Fusion;
 using FusionExamples.FusionHelpers;
 using FusionExamples.UIHelpers;
+using StaticEvents;
+using Tanknarok;
 using Tanknarok.UI;
 using TMPro;
+using UniRx;
 using UnityEngine;
 
 namespace FusionExamples.Tanknarok
@@ -12,6 +16,8 @@ namespace FusionExamples.Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
+		[SerializeField] private MainMenuUI _mainMenuUI;
+		
 		[SerializeField] private GameManager _gameManagerPrefab;
 		[SerializeField] private Player _playerPrefab;
 		[SerializeField] private TMP_InputField _room;
@@ -22,12 +28,23 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private Panel _uiRoom;
 		[SerializeField] private GameObject _uiGame;
 
+		private IObservable<GameMode> _gameModeEvent = MainSceneEvents.GameModeEvent;
+
 		private FusionLauncher.ConnectionStatus _status = FusionLauncher.ConnectionStatus.Disconnected;
 		private GameMode _gameMode;
+
+		private IDisposable _gameModeEventSubscription;
 		
 		private void Awake()
 		{
 			DontDestroyOnLoad(this);
+
+			_gameModeEventSubscription = _gameModeEvent.Subscribe(gameMode => _gameMode = gameMode);
+		}
+
+		private void OnDestroy()
+		{
+			_gameModeEventSubscription?.Dispose();
 		}
 
 		private void Start()
@@ -51,35 +68,12 @@ namespace FusionExamples.Tanknarok
 				UpdateUI();
 			}
 		}
-
-		// What mode to play - Called from the start menu
-		public void OnHostOptions()
-		{
-			SetGameMode(GameMode.Host);
-		}
-
-		public void OnJoinOptions()
-		{
-			SetGameMode(GameMode.Client);
-		}
-
-		public void OnSharedOptions()
-		{
-			SetGameMode(GameMode.Shared);
-		}
-
-		private void SetGameMode(GameMode gamemode)
-		{
-			_gameMode = gamemode;
-			if (GateUI(_uiStart))
-				_uiRoom.SetVisible(true);
-		}
-
+		
 		public void OnEnterRoom()
 		{
 			if (GateUI(_uiRoom))
 			{
-		    FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
+				FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
 				if (launcher == null)
 					launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
 
