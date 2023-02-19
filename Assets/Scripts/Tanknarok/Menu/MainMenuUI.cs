@@ -8,7 +8,7 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 
-namespace Tanknarok
+namespace Tanknarok.Menu
 {
     public class MainMenuUI : MonoBehaviour
     {
@@ -20,7 +20,7 @@ namespace Tanknarok
         [SerializeField] private Panel _uiRoom;
         [SerializeField] private GameObject _uiGame;
         
-        FusionLauncher.ConnectionStatus _status;
+        private FusionLauncher.ConnectionStatus _status;
         
         private readonly IObservable<FusionLauncher.ConnectionStatus> _connectionStatusChangedEvent =
             MainSceneEvents.OnConnectionStatusChanged;
@@ -29,6 +29,10 @@ namespace Tanknarok
         /// Методом OnNext() оповещает всех слушателей о смене GameMode
         /// </summary>
         private readonly IObserver<GameMode> _gameModeChangedBroadcaster = MainSceneEvents.GameModeChangedBroadcaster;
+
+        private readonly IObserver<Unit> _onEnterRoomBroadcaster = MainSceneEvents.OnEnterRoomBroadcaster;
+
+        
         private IDisposable _connectionStatusChangedSubscription;
         
         public void OnHostOptions()
@@ -47,6 +51,15 @@ namespace Tanknarok
         {
             BroadcastModeChanged(GameMode.Shared);
             CloseStartThenShowUiRoom();
+        }
+        
+        public void OnEnterRoom()
+        {
+            Close(_uiRoom, out bool wasOpened);
+            if (wasOpened)
+            {
+                _onEnterRoomBroadcaster.OnNext(new Unit());
+            }
         }
 
         private void Awake()

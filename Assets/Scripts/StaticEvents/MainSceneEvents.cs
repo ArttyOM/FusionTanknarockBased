@@ -14,10 +14,17 @@ namespace StaticEvents
         
         private static readonly Subject<FusionLauncher.ConnectionStatus> OnConnectionStatusChangedSubject = new Subject<FusionLauncher.ConnectionStatus>();
 
-        public static IObserver<GameMode> GameModeChangedBroadcaster => GameModeSubject;
-        public static IObservable<GameMode> OnGameModChanged => GameModeSubject;
+        private static readonly Subject<Unit> OnEnterRoomSubject = new Subject<Unit>();
 
-        public static IObservable<FusionLauncher.ConnectionStatus> OnConnectionStatusChanged => OnConnectionStatusChangedSubject;
+        public static IObserver<GameMode> GameModeChangedBroadcaster => GameModeSubject;
+        public static IObservable<GameMode> OnGameModUpdate => GameModeSubject;
+
+        
         public static IObserver<FusionLauncher.ConnectionStatus> OnConnectionStatusBroadcaster => OnConnectionStatusChangedSubject;
+        public static IObservable<FusionLauncher.ConnectionStatus> OnConnectionStatusChanged => OnConnectionStatusChangedSubject;
+        
+        
+        public static IObserver<Unit> OnEnterRoomBroadcaster => OnEnterRoomSubject;
+        public static IObservable<Unit> OnEnterRoom => OnEnterRoomSubject;
     }
 }
