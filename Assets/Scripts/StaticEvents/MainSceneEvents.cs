@@ -11,10 +11,10 @@ namespace StaticEvents
     public static class MainSceneEvents
     {
         private static readonly Subject<GameMode> GameModeSubject = new Subject<GameMode>();
-        
         private static readonly Subject<FusionLauncher.ConnectionStatus> OnConnectionStatusChangedSubject = new Subject<FusionLauncher.ConnectionStatus>();
-
         private static readonly Subject<Unit> OnEnterRoomSubject = new Subject<Unit>();
+        private static readonly Subject<string> OnRoomNameUpdateSubject = new Subject<string>();
+        
 
         public static IObserver<GameMode> GameModeChangedBroadcaster => GameModeSubject;
         public static IObservable<GameMode> OnGameModUpdate => GameModeSubject;
@@ -26,5 +26,9 @@ namespace StaticEvents
         
         public static IObserver<Unit> OnEnterRoomBroadcaster => OnEnterRoomSubject;
         public static IObservable<Unit> OnEnterRoom => OnEnterRoomSubject;
+
+        public static IObserver<string> OnRoomNameBroadcaster => OnRoomNameUpdateSubject;
+        public static IObservable<string> OnRoomNameUpdate => OnRoomNameUpdateSubject;
+
     }
 }
