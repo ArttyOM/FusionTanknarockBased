@@ -1,8 +1,12 @@
+using System;
 using Fusion;
 using FusionExamples.FusionHelpers;
 using FusionExamples.UIHelpers;
+using StaticEvents;
+using Tanknarok;
 using Tanknarok.UI;
 using TMPro;
+using UniRx;
 using UnityEngine;
 
 namespace FusionExamples.Tanknarok
@@ -12,6 +16,8 @@ namespace FusionExamples.Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
+		[SerializeField] private MainMenuUI _mainMenuUI;
+		
 		[SerializeField] private GameManager _gameManagerPrefab;
 		[SerializeField] private Player _playerPrefab;
 		[SerializeField] private TMP_InputField _room;
@@ -22,12 +28,26 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private Panel _uiRoom;
 		[SerializeField] private GameObject _uiGame;
 
-		private FusionLauncher.ConnectionStatus _status = FusionLauncher.ConnectionStatus.Disconnected;
+		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
+			MainSceneEvents.OnConnectionStatusBroadcaster;
+		
+		private readonly IObservable<GameMode> _gameModeEvent = MainSceneEvents.OnGameModChanged;
+		private IDisposable _gameModeEventSubscription;
+
+		private FusionLauncher.ConnectionStatus _status; 
 		private GameMode _gameMode;
+		
 		
 		private void Awake()
 		{
 			DontDestroyOnLoad(this);
+
+			_gameModeEventSubscription = _gameModeEvent.Subscribe(gameMode => _gameMode = gameMode);
+		}
+
+		private void OnDestroy()
+		{
+			_gameModeEventSubscription?.Dispose();
 		}
 
 		private void Start()
@@ -48,38 +68,16 @@ namespace FusionExamples.Tanknarok
 						runner.Shutdown(false);
 					}
 				}
-				UpdateUI();
+				
+				//UpdateUI();
 			}
 		}
-
-		// What mode to play - Called from the start menu
-		public void OnHostOptions()
-		{
-			SetGameMode(GameMode.Host);
-		}
-
-		public void OnJoinOptions()
-		{
-			SetGameMode(GameMode.Client);
-		}
-
-		public void OnSharedOptions()
-		{
-			SetGameMode(GameMode.Shared);
-		}
-
-		private void SetGameMode(GameMode gamemode)
-		{
-			_gameMode = gamemode;
-			if (GateUI(_uiStart))
-				_uiRoom.SetVisible(true);
-		}
-
+		
 		public void OnEnterRoom()
 		{
 			if (GateUI(_uiRoom))
 			{
-		    FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
+				FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
 				if (launcher == null)
 					launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
 
@@ -125,7 +123,8 @@ namespace FusionExamples.Tanknarok
 			}
 
 			_status = status;
-			UpdateUI();
+			_connectionStatusChangedBroadcaster.OnNext(status);
+			//UpdateUI();
 		}
 
 		private void OnSpawnWorld(NetworkRunner runner)
@@ -160,48 +159,6 @@ namespace FusionExamples.Tanknarok
 			Debug.Log($"Despawning Player {playerref}");
 			Player player = PlayerManager.Get(playerref);
 			player.TriggerDespawn();
-		}
-
-		private void UpdateUI()
-		{
-			bool intro = false;
-			bool progress = false;
-			bool running = false;
-
-			switch (_status)
-			{
-				case FusionLauncher.ConnectionStatus.Disconnected:
-					_progress.text = "Disconnected!";
-					intro = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Failed:
-					_progress.text = "Failed!";
-					intro = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Connecting:
-					_progress.text = "Connecting";
-					progress = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Connected:
-					_progress.text = "Connected";
-					progress = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Loading:
-					_progress.text = "Loading";
-					progress = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Loaded:
-					running = true;
-					break;
-			}
-
-			_uiCurtain.SetVisible(!running);
-			_uiStart.SetVisible(intro);
-			_uiProgress.SetVisible(progress);
-			_uiGame.SetActive(running);
-			
-			if(intro)
-				MusicPlayer.instance.SetLowPassTranstionDirection( -1f);
 		}
 	}
 }
