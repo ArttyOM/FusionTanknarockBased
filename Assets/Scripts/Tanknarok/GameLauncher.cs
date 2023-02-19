@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using Fusion;
 using FusionExamples.FusionHelpers;
 using FusionExamples.UIHelpers;
 using StaticEvents;
 using Tanknarok;
+using Tanknarok.Menu;
 using Tanknarok.UI;
 using TMPro;
 using UniRx;
@@ -21,18 +23,15 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private GameManager _gameManagerPrefab;
 		[SerializeField] private Player _playerPrefab;
 		[SerializeField] private TMP_InputField _room;
-		[SerializeField] private TextMeshProUGUI _progress;
-		[SerializeField] private Panel _uiCurtain;
-		[SerializeField] private Panel _uiStart;
 		[SerializeField] private Panel _uiProgress;
-		[SerializeField] private Panel _uiRoom;
-		[SerializeField] private GameObject _uiGame;
 
 		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
 			MainSceneEvents.OnConnectionStatusBroadcaster;
 		
-		private readonly IObservable<GameMode> _gameModeEvent = MainSceneEvents.OnGameModChanged;
-		private IDisposable _gameModeEventSubscription;
+		private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
+		private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
+
+		private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
 		private FusionLauncher.ConnectionStatus _status; 
 		private GameMode _gameMode;
@@ -42,12 +41,19 @@ namespace FusionExamples.Tanknarok
 		{
 			DontDestroyOnLoad(this);
 
-			_gameModeEventSubscription = _gameModeEvent.Subscribe(gameMode => _gameMode = gameMode);
+			IDisposable onGameModeUpdateSubscription = _onGameModeUpdate.Subscribe(gameMode => _gameMode = gameMode);
+			_subscriptions.Add(onGameModeUpdateSubscription);
+
+			IDisposable onEnterRoomSubscription = _onEnterRoom.Subscribe(_ => OnEnterRoom());
+			_subscriptions.Add(onEnterRoomSubscription);
 		}
 
 		private void OnDestroy()
 		{
-			_gameModeEventSubscription?.Dispose();
+			foreach (var subscription in _subscriptions)
+			{
+				subscription?.Dispose();
+			}
 		}
 
 		private void Start()
@@ -73,34 +79,19 @@ namespace FusionExamples.Tanknarok
 			}
 		}
 		
-		public void OnEnterRoom()
+		private void OnEnterRoom()
 		{
-			if (GateUI(_uiRoom))
-			{
-				FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
-				if (launcher == null)
-					launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
 
-				LevelManager lm = FindObjectOfType<LevelManager>();
-				lm.launcher = launcher;
+			FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
+			if (launcher == null)
+				launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
 
-				launcher.Launch(_gameMode, _room.text, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
-			}
+			LevelManager lm = FindObjectOfType<LevelManager>();
+			lm.launcher = launcher;
+
+			launcher.Launch(_gameMode, _room.text, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
 		}
-
-		/// <summary>
-		/// Call this method from button events to close the current UI panel and check the return value to decide
-		/// if it's ok to proceed with handling the button events. Prevents double-actions and makes sure UI panels are closed. 
-		/// </summary>
-		/// <param name="ui">Currently visible UI that should be closed</param>
-		/// <returns>True if UI is in fact visible and action should proceed</returns>
-		private bool GateUI(Panel ui)
-		{
-			if (!ui.isShowing)
-				return false;
-			ui.SetVisible(false);
-			return true;
-		}
+		
 
 		private void OnConnectionStatusUpdate(NetworkRunner runner, FusionLauncher.ConnectionStatus status, string reason)
 		{

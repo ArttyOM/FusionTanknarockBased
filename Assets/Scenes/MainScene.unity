@@ -349,8 +349,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1279107954}
-        m_TargetAssemblyTypeName: FusionExamples.TankGame.App, Assembly-CSharp
+      - m_Target: {fileID: 1279107955}
+        m_TargetAssemblyTypeName: Tanknarok.Menu.MainMenuUI, Assembly-CSharp
         m_MethodName: OnEnterRoom
         m_Mode: 1
         m_Arguments:
