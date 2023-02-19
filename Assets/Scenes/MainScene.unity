@@ -3215,10 +3215,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f12f2f724414ad44caaa19a01be8fb84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _progress: {fileID: 604924949}
   _uiCurtain: {fileID: 1533048366}
   _uiStart: {fileID: 556233617}
   _uiProgress: {fileID: 148003028}
   _uiRoom: {fileID: 757041940}
+  _uiGame: {fileID: 1378054136}
 --- !u!1 &1286783608
 GameObject:
   m_ObjectHideFlags: 0

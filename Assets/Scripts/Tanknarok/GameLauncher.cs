@@ -28,12 +28,15 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private Panel _uiRoom;
 		[SerializeField] private GameObject _uiGame;
 
-		private IObservable<GameMode> _gameModeEvent = MainSceneEvents.GameModeEvent;
-
-		private FusionLauncher.ConnectionStatus _status = FusionLauncher.ConnectionStatus.Disconnected;
-		private GameMode _gameMode;
-
+		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
+			MainSceneEvents.OnConnectionStatusBroadcaster;
+		
+		private readonly IObservable<GameMode> _gameModeEvent = MainSceneEvents.OnGameModChanged;
 		private IDisposable _gameModeEventSubscription;
+
+		private FusionLauncher.ConnectionStatus _status; 
+		private GameMode _gameMode;
+		
 		
 		private void Awake()
 		{
@@ -65,7 +68,8 @@ namespace FusionExamples.Tanknarok
 						runner.Shutdown(false);
 					}
 				}
-				UpdateUI();
+				
+				//UpdateUI();
 			}
 		}
 		
@@ -119,7 +123,8 @@ namespace FusionExamples.Tanknarok
 			}
 
 			_status = status;
-			UpdateUI();
+			_connectionStatusChangedBroadcaster.OnNext(status);
+			//UpdateUI();
 		}
 
 		private void OnSpawnWorld(NetworkRunner runner)
@@ -154,48 +159,6 @@ namespace FusionExamples.Tanknarok
 			Debug.Log($"Despawning Player {playerref}");
 			Player player = PlayerManager.Get(playerref);
 			player.TriggerDespawn();
-		}
-
-		private void UpdateUI()
-		{
-			bool intro = false;
-			bool progress = false;
-			bool running = false;
-
-			switch (_status)
-			{
-				case FusionLauncher.ConnectionStatus.Disconnected:
-					_progress.text = "Disconnected!";
-					intro = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Failed:
-					_progress.text = "Failed!";
-					intro = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Connecting:
-					_progress.text = "Connecting";
-					progress = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Connected:
-					_progress.text = "Connected";
-					progress = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Loading:
-					_progress.text = "Loading";
-					progress = true;
-					break;
-				case FusionLauncher.ConnectionStatus.Loaded:
-					running = true;
-					break;
-			}
-
-			_uiCurtain.SetVisible(!running);
-			_uiStart.SetVisible(intro);
-			_uiProgress.SetVisible(progress);
-			_uiGame.SetActive(running);
-			
-			if(intro)
-				MusicPlayer.instance.SetLowPassTranstionDirection( -1f);
 		}
 	}
 }
