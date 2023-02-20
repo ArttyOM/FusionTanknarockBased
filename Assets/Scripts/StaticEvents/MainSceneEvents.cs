@@ -14,8 +14,12 @@ namespace StaticEvents
         private static readonly Subject<FusionLauncher.ConnectionStatus> OnConnectionStatusChangedSubject = new Subject<FusionLauncher.ConnectionStatus>();
         private static readonly Subject<Unit> OnEnterRoomSubject = new Subject<Unit>();
         private static readonly Subject<string> OnRoomNameUpdateSubject = new Subject<string>();
-        
+        private static readonly Subject<bool> OnProgressShowingSubject = new Subject<bool>();
 
+        public static IObserver<bool> OnProgressShowingBroadcaster => OnProgressShowingSubject;
+        public static IObservable<bool> OnProgressShowing => OnProgressShowingSubject;
+        
+        
         public static IObserver<GameMode> GameModeChangedBroadcaster => GameModeSubject;
         public static IObservable<GameMode> OnGameModUpdate => GameModeSubject;
 
