@@ -39,8 +39,13 @@ namespace Tanknarok.Menu
         /// <summary>
         /// Методом OnNext() оповещает всех слушателей об обновлении имени комнаты
         /// </summary>
-        private readonly IObserver<string> _onRoomNameBroadcaster = MainSceneEvents.OnRoomNameBroadcaster; 
-        
+        private readonly IObserver<string> _onRoomNameBroadcaster = MainSceneEvents.OnRoomNameBroadcaster;
+
+        /// <summary>
+        /// Методом OnNext() оповещает всех слушателей, показывается ли экран загрузки
+        /// </summary>
+        private readonly IObserver<bool> _onProgressShowingBroadcaster = MainSceneEvents.OnProgressShowingBroadcaster;
+
         private IDisposable _connectionStatusChangedSubscription;
         
         public void OnHostOptions()
@@ -81,7 +86,11 @@ namespace Tanknarok.Menu
                 UpdateUI();
             });
             Observable.EveryUpdate().Where(_ => _uiProgress.isShowing)
-                .Subscribe(_ => UpdateUI());
+                .Subscribe(_ =>
+                {
+                    _onProgressShowingBroadcaster.OnNext(true);
+                    UpdateUI();
+                });
             
             _room.onValueChanged.AddListener(_=>_onRoomNameBroadcaster.OnNext(_room.text));
         }

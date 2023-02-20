@@ -18,18 +18,21 @@ namespace FusionExamples.Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
-		[SerializeField] private MainMenuUI _mainMenuUI;
+		private MainMenuUI _mainMenuUI;
 		
 		[SerializeField] private GameManager _gameManagerPrefab;
 		[SerializeField] private Player _playerPrefab;
-		[SerializeField] private Panel _uiProgress;
 
 		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
 			MainSceneEvents.OnConnectionStatusBroadcaster;
-		
-		private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
-		private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
-		private readonly IObservable<string> _onRoomNameUpdate = MainSceneEvents.OnRoomNameUpdate;
+
+		#region Слушатели событий
+			private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
+			private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
+			private readonly IObservable<string> _onRoomNameUpdate = MainSceneEvents.OnRoomNameUpdate;
+			private readonly IObservable<bool> _onProgressShowing = MainSceneEvents.OnProgressShowing;
+		#endregion
+
 
 		private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
@@ -42,6 +45,11 @@ namespace FusionExamples.Tanknarok
 		{
 			DontDestroyOnLoad(this);
 
+			SubscribeOnUIEvents();
+		}
+
+		private void SubscribeOnUIEvents()
+		{
 			IDisposable onGameModeUpdateSubscription = _onGameModeUpdate.Subscribe(gameMode => _gameMode = gameMode);
 			_subscriptions.Add(onGameModeUpdateSubscription);
 
@@ -50,6 +58,12 @@ namespace FusionExamples.Tanknarok
 
 			IDisposable onRoomNameUpdateSubscription = _onRoomNameUpdate.Subscribe(newText => _roomName = newText);
 			_subscriptions.Add(onRoomNameUpdateSubscription);
+
+			IDisposable onProgressShowingSubscription = _onProgressShowing
+				.Where(isUiProgressShowing => isUiProgressShowing)
+				.Where(_ => Input.GetKeyUp(KeyCode.Escape))
+				.Subscribe(_ => ShutdownNetwork());
+			_subscriptions.Add(onProgressShowingSubscription);
 		}
 
 		private void OnDestroy()
@@ -65,23 +79,16 @@ namespace FusionExamples.Tanknarok
 			OnConnectionStatusUpdate(null, FusionLauncher.ConnectionStatus.Disconnected, "");
 		}
 
-		private void Update()
+		private void ShutdownNetwork()
 		{
-			if (_uiProgress.isShowing)
+			NetworkRunner runner = FindObjectOfType<NetworkRunner>();
+			if (runner != null && !runner.IsShutdown)
 			{
-				if (Input.GetKeyUp(KeyCode.Escape))
-				{
-					NetworkRunner runner = FindObjectOfType<NetworkRunner>();
-					if (runner != null && !runner.IsShutdown)
-					{
-						// Calling with destroyGameObject false because we do this in the OnShutdown callback on FusionLauncher
-						runner.Shutdown(false);
-					}
-				}
-				
-				//UpdateUI();
+				// Calling with destroyGameObject false because we do this in the OnShutdown callback on FusionLauncher
+				runner.Shutdown(false);
 			}
 		}
+		
 		
 		private void OnEnterRoom()
 		{
