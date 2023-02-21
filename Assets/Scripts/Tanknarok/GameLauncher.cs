@@ -14,28 +14,33 @@ using UnityEngine;
 namespace FusionExamples.Tanknarok
 {
 	/// <summary>
-	/// App entry point and main UI flow management.
+	/// точка входа
+	/// app entry point
+	/// main()
+	/// bootstrap
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
-		private MainMenuUI _mainMenuUI;
-		
-		[SerializeField] private GameManager _gameManagerPrefab;
-		[SerializeField] private Player _playerPrefab;
-
+		#region Вещатели событий
 		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
 			MainSceneEvents.OnConnectionStatusBroadcaster;
-
-		#region Слушатели событий
-			private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
-			private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
-			private readonly IObservable<string> _onRoomNameUpdate = MainSceneEvents.OnRoomNameUpdate;
-			private readonly IObservable<bool> _onProgressShowing = MainSceneEvents.OnProgressShowing;
 		#endregion
-
-
+		
+		#region Слушатели событий
+		private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
+		private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
+		private readonly IObservable<string> _onRoomNameUpdate = MainSceneEvents.OnRoomNameUpdate;
+		private readonly IObservable<bool> _onProgressShowing = MainSceneEvents.OnProgressShowing;
+		#endregion
+		
 		private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
+		
+		private MainMenuUI _mainMenuUI;
+		private FusionLauncher _launcher;
 
+		[SerializeField] private FusionLauncher _launcherPrefab;
+		[SerializeField] private Player _playerPrefab;
+		
 		private FusionLauncher.ConnectionStatus _status; 
 		private GameMode _gameMode;
 
@@ -73,12 +78,7 @@ namespace FusionExamples.Tanknarok
 				subscription?.Dispose();
 			}
 		}
-
-		private void Start()
-		{
-			OnConnectionStatusUpdate(null, FusionLauncher.ConnectionStatus.Disconnected, "");
-		}
-
+		
 		private void ShutdownNetwork()
 		{
 			NetworkRunner runner = FindObjectOfType<NetworkRunner>();
@@ -89,54 +89,25 @@ namespace FusionExamples.Tanknarok
 			}
 		}
 		
-		
 		private void OnEnterRoom()
 		{
-
-			FusionLauncher launcher = FindObjectOfType<FusionLauncher>();
-			if (launcher == null)
-				launcher = new GameObject("Launcher").AddComponent<FusionLauncher>();
+			_launcher = FindObjectOfType<FusionLauncher>();
+			if (_launcher == null)
+				_launcher = Instantiate(_launcherPrefab);
 
 			LevelManager lm = FindObjectOfType<LevelManager>();
-			lm.launcher = launcher;
+			lm.launcher = _launcher;
 
-			launcher.Launch(_gameMode, _roomName, lm, OnConnectionStatusUpdate, OnSpawnWorld, OnSpawnPlayer, OnDespawnPlayer);
+			_launcher.Launch(_gameMode, _roomName, lm, null, null, OnSpawnPlayer, OnDespawnPlayer);
 		}
 		
-
-		private void OnConnectionStatusUpdate(NetworkRunner runner, FusionLauncher.ConnectionStatus status, string reason)
+		private void Start()
 		{
-			if (!this)
-				return;
+			_launcher = FindObjectOfType<FusionLauncher>();
+			if (_launcher == null)
+				_launcher = Instantiate(_launcherPrefab);
+			_launcher.Init();
 
-			Debug.Log(status);
-
-			if (status != _status)
-			{
-				switch (status)
-				{
-					case FusionLauncher.ConnectionStatus.Disconnected:
-						ErrorBox.Show("Disconnected!", reason, () => { });
-						break;
-					case FusionLauncher.ConnectionStatus.Failed:
-						ErrorBox.Show("Error!", reason, () => { });
-						break;
-				}
-			}
-
-			_status = status;
-			_connectionStatusChangedBroadcaster.OnNext(status);
-			//UpdateUI();
-		}
-
-		private void OnSpawnWorld(NetworkRunner runner)
-		{
-			Debug.Log("Spawning GameManager");
-			runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity, null, InitNetworkState);
-			void InitNetworkState(NetworkRunner runner, NetworkObject world)
-			{
-				world.transform.parent = transform;
-			}
 		}
 
 		private void OnSpawnPlayer(NetworkRunner runner, PlayerRef playerref)

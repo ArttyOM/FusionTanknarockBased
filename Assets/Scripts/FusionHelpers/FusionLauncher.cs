@@ -4,6 +4,8 @@ using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
 using FusionExamples.Tanknarok;
+using StaticEvents;
+using Tanknarok.UI;
 
 namespace FusionExamples.FusionHelpers
 {
@@ -12,6 +14,13 @@ namespace FusionExamples.FusionHelpers
 	/// </summary>
 	public class FusionLauncher : MonoBehaviour, INetworkRunnerCallbacks
 	{
+		[SerializeField] private GameManager _gameManagerPrefab;
+		
+		#region Вещатели событий
+		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
+			MainSceneEvents.OnConnectionStatusBroadcaster;
+		#endregion
+		
 		private NetworkRunner _runner;
 		private Action<NetworkRunner, ConnectionStatus, string> _connectionCallback;
 		private ConnectionStatus _status;
@@ -37,8 +46,8 @@ namespace FusionExamples.FusionHelpers
 			Action<NetworkRunner, PlayerRef> onSpawnPlayer,
 			Action<NetworkRunner, PlayerRef> onDespawnPlayer)
 		{
-			_connectionCallback = onConnect;
-			_spawnWorldCallback = onSpawnWorld;
+			_connectionCallback = OnConnectionStatusUpdate;
+			_spawnWorldCallback = OnSpawnWorld;
 			_spawnPlayerCallback = onSpawnPlayer;
 			_despawnPlayerCallback = onDespawnPlayer;
 
@@ -118,6 +127,42 @@ namespace FusionExamples.FusionHelpers
 //			SetConnectionStatus(ConnectionStatus.Connected, "");
 		}
 
+		private void OnConnectionStatusUpdate(NetworkRunner runner, FusionLauncher.ConnectionStatus status, string reason)
+		{
+			if (!this)
+				return;
+
+			Debug.Log(status);
+
+			if (status != _status)
+			{
+				switch (status)
+				{
+					case FusionLauncher.ConnectionStatus.Disconnected:
+						ErrorBox.Show("Disconnected!", reason, () => { });
+						break;
+					case FusionLauncher.ConnectionStatus.Failed:
+						ErrorBox.Show("Error!", reason, () => { });
+						break;
+				}
+			}
+
+			_status = status;
+			_connectionStatusChangedBroadcaster.OnNext(status);
+		}
+		
+		private void OnSpawnWorld(NetworkRunner runner)
+		{
+			Debug.Log("Spawning GameManager");
+			runner.Spawn(_gameManagerPrefab, Vector3.zero, Quaternion.identity, null, InitNetworkState);
+			void InitNetworkState(NetworkRunner runner, NetworkObject world)
+			{
+				world.transform.parent = transform;
+			}
+		}
+		
+
+		
 		private void InstantiatePlayer(NetworkRunner runner, PlayerRef playerref)
 		{
 			if (_spawnWorldCallback!=null && (runner.IsServer || runner.IsSharedModeMasterClient) )
@@ -190,6 +235,11 @@ namespace FusionExamples.FusionHelpers
             
       if(_runner!=null && _runner.gameObject)
 	    	Destroy(_runner.gameObject);
+		}
+
+		public void Init()
+		{
+			OnConnectionStatusUpdate(null, FusionLauncher.ConnectionStatus.Disconnected, "");
 		}
 	}
 }

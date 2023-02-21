@@ -3193,11 +3193,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474632e4739f4a8ab1338ef00b9bcc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainMenuUI: {fileID: 0}
-  _gameManagerPrefab: {fileID: 592953329146046646, guid: cebdea494ca74974e809d626e5e9f63e, type: 3}
+  _launcherPrefab: {fileID: -2484961027511208646, guid: d75c7321674a2d94ab9c8517fde0c30f, type: 3}
   _playerPrefab: {fileID: -3098922383743760179, guid: e0684f2c29d615d4d8e7a6ddae619457, type: 3}
-  _room: {fileID: 1414014595}
-  _uiProgress: {fileID: 148003028}
 --- !u!114 &1279107955
 MonoBehaviour:
   m_ObjectHideFlags: 0
