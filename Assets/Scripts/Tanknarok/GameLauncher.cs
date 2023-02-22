@@ -49,6 +49,9 @@ namespace FusionExamples.Tanknarok
 		private void Awake()
 		{
 			DontDestroyOnLoad(this);
+			
+			_mainMenuUI = FindObjectOfType<MainMenuUI>();
+			DontDestroyOnLoad(_mainMenuUI);
 
 			SubscribeOnUIEvents();
 		}

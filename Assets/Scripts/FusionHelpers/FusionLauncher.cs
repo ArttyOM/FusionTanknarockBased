@@ -74,7 +74,6 @@ namespace FusionExamples.FusionHelpers
 
 		public void SetConnectionStatus(ConnectionStatus status, string message)
 		{
-			_status = status;
 			if (_connectionCallback != null)
 				_connectionCallback(_runner, status, message);
 		}
