@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using Fusion;
 using FusionExamples.FusionHelpers;
-using FusionExamples.UIHelpers;
+using FusionExamples.Tanknarok;
 using StaticEvents;
-using Tanknarok;
 using Tanknarok.Menu;
-using Tanknarok.UI;
-using TMPro;
 using UniRx;
 using UnityEngine;
 
-namespace FusionExamples.Tanknarok
+namespace Tanknarok
 {
 	/// <summary>
 	/// точка входа
@@ -21,11 +18,6 @@ namespace FusionExamples.Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
-		#region Вещатели событий
-		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
-			MainSceneEvents.OnConnectionStatusBroadcaster;
-		#endregion
-		
 		#region Слушатели событий
 		private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
 		private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
