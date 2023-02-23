@@ -80,6 +80,7 @@ namespace Tanknarok.Menu
 
         private void Awake()
         {
+
             _connectionStatusChangedEvent.Subscribe(newStatus =>
             {
                 _status = newStatus;
