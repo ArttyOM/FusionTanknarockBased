@@ -15,6 +15,7 @@ namespace FusionExamples.FusionHelpers
 	public class FusionLauncher : MonoBehaviour, INetworkRunnerCallbacks
 	{
 		[SerializeField] private GameManager _gameManagerPrefab;
+		[SerializeField] private Player _playerPrefab;
 		
 		#region Вещатели событий
 		private readonly IObserver<FusionLauncher.ConnectionStatus> _connectionStatusChangedBroadcaster =
@@ -40,16 +41,12 @@ namespace FusionExamples.FusionHelpers
 		}
 
 		public async void Launch(GameMode mode, string room,
-			INetworkSceneManager sceneLoader,
-			Action<NetworkRunner, ConnectionStatus, string> onConnect, 
-			Action<NetworkRunner> onSpawnWorld, 
-			Action<NetworkRunner, PlayerRef> onSpawnPlayer,
-			Action<NetworkRunner, PlayerRef> onDespawnPlayer)
+			INetworkSceneManager sceneLoader)
 		{
 			_connectionCallback = OnConnectionStatusUpdate;
 			_spawnWorldCallback = OnSpawnWorld;
-			_spawnPlayerCallback = onSpawnPlayer;
-			_despawnPlayerCallback = onDespawnPlayer;
+			_spawnPlayerCallback = OnSpawnPlayer;
+			_despawnPlayerCallback = OnDespawnPlayer;
 
 			SetConnectionStatus(ConnectionStatus.Connecting, "");
 
@@ -160,7 +157,29 @@ namespace FusionExamples.FusionHelpers
 			}
 		}
 		
-
+		private void OnSpawnPlayer(NetworkRunner runner, PlayerRef playerref)
+		{
+			if (GameManager.playState != GameManager.PlayState.LOBBY)
+			{
+				Debug.Log("Not Spawning Player - game has already started");
+				return;
+			}
+			Debug.Log($"Spawning tank for player {playerref}");
+			runner.Spawn(_playerPrefab, Vector3.zero, Quaternion.identity, playerref, InitNetworkState);
+			void InitNetworkState(NetworkRunner runner, NetworkObject networkObject)
+			{
+				Player player = networkObject.gameObject.GetComponent<Player>();
+				Debug.Log($"Initializing player {player.playerID}");
+				player.InitNetworkState(GameManager.MAX_LIVES);
+			}
+		}
+		
+		private void OnDespawnPlayer(NetworkRunner runner, PlayerRef playerref)
+		{
+			Debug.Log($"Despawning Player {playerref}");
+			Player player = PlayerManager.Get(playerref);
+			player.TriggerDespawn();
+		}
 		
 		private void InstantiatePlayer(NetworkRunner runner, PlayerRef playerref)
 		{

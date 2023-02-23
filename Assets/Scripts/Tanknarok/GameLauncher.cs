@@ -39,8 +39,7 @@ namespace FusionExamples.Tanknarok
 		private FusionLauncher _launcher;
 
 		[SerializeField] private FusionLauncher _launcherPrefab;
-		[SerializeField] private Player _playerPrefab;
-		
+
 		private FusionLauncher.ConnectionStatus _status; 
 		private GameMode _gameMode;
 
@@ -101,7 +100,7 @@ namespace FusionExamples.Tanknarok
 			LevelManager lm = FindObjectOfType<LevelManager>();
 			lm.launcher = _launcher;
 
-			_launcher.Launch(_gameMode, _roomName, lm, null, null, OnSpawnPlayer, OnDespawnPlayer);
+			_launcher.Launch(_gameMode, _roomName, lm);
 		}
 		
 		private void Start()
@@ -112,29 +111,6 @@ namespace FusionExamples.Tanknarok
 			_launcher.Init();
 
 		}
-
-		private void OnSpawnPlayer(NetworkRunner runner, PlayerRef playerref)
-		{
-			if (GameManager.playState != GameManager.PlayState.LOBBY)
-			{
-				Debug.Log("Not Spawning Player - game has already started");
-				return;
-			}
-			Debug.Log($"Spawning tank for player {playerref}");
-			runner.Spawn(_playerPrefab, Vector3.zero, Quaternion.identity, playerref, InitNetworkState);
-			void InitNetworkState(NetworkRunner runner, NetworkObject networkObject)
-			{
-				Player player = networkObject.gameObject.GetComponent<Player>();
-				Debug.Log($"Initializing player {player.playerID}");
-				player.InitNetworkState(GameManager.MAX_LIVES);
-			}
-		}
-
-		private void OnDespawnPlayer(NetworkRunner runner, PlayerRef playerref)
-		{
-			Debug.Log($"Despawning Player {playerref}");
-			Player player = PlayerManager.Get(playerref);
-			player.TriggerDespawn();
-		}
+		
 	}
 }
