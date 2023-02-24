@@ -40,8 +40,11 @@ namespace FusionExamples.FusionHelpers
         private NetworkRunner _runner;
         private ConnectionStatus _status;
 
+        private void Awake()
+        {
+        }
 
-        public void OnInput(NetworkRunner runner, NetworkInput input)
+public void OnInput(NetworkRunner runner, NetworkInput input)
         {
         }
 
