@@ -19,6 +19,7 @@ namespace Tanknarok
 	public class GameLauncher : MonoBehaviour
 	{
 		private MainMenuUI _mainMenuUI;
+		private NetworkRoomOpener _networkRoomOpener;
 
 		private FusionLauncher.ConnectionStatus _status; 
 		private GameMode _gameMode;
@@ -32,6 +33,8 @@ namespace Tanknarok
 			_mainMenuUI = FindObjectOfType<MainMenuUI>();
 			DontDestroyOnLoad(_mainMenuUI);
 			
+			 _networkRoomOpener = FindObjectOfType<NetworkRoomOpener>();
+			 DontDestroyOnLoad(_networkRoomOpener);
 		}
 	}
 }
