@@ -11,7 +11,7 @@ namespace FusionExamples.Tanknarok
 	/// <summary>
 	/// The LevelManager controls the map - keeps track of spawn points for players and powerups, and spawns powerups at regular intervals.
 	/// </summary>
-	public class LevelManager : NetworkSceneManagerBase
+	public class NetworkSceneManager : NetworkSceneManagerBase
 	{
 		[SerializeField] private int _lobby;
 		[SerializeField] private int[] _levels;

@@ -9,39 +9,60 @@ using StaticEvents;
 using UniRx;
 using UnityEngine;
 
-public class NetworkRoomOpener : MonoBehaviour
+namespace Tanknarok
 {
-    [SerializeField] private FusionLauncher _launcherPrefab;
-    
+
+    /// <summary>
+    /// Хранит актуальный gameMode, roomName,
+    /// 
+    /// </summary>
+    public class NetworkRoomOpener : UnityEngine.Object
+    {
+        public NetworkRoomOpener(FusionLauncher launcherPrefab)
+        {
+            _launcherPrefab = launcherPrefab;
+
+
+        }
+
+        ~NetworkRoomOpener()
+        {
+            OnDestroy();
+        }
+
+        [SerializeField] private FusionLauncher _launcherPrefab;
+
     #region Слушатели событий
+
     private readonly IObservable<GameMode> _onGameModeUpdate = MainSceneEvents.OnGameModUpdate;
     private readonly IObservable<Unit> _onEnterRoom = MainSceneEvents.OnEnterRoom;
     private readonly IObservable<string> _onRoomNameUpdate = MainSceneEvents.OnRoomNameUpdate;
     private readonly IObservable<bool> _onProgressShowing = MainSceneEvents.OnProgressShowing;
+
     #endregion
 
     private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
-    private FusionLauncher.ConnectionStatus _status; 
+    private FusionLauncher.ConnectionStatus _status;
     private GameMode _gameMode;
 
     private string _roomName;
     private FusionLauncher _launcher;
-    
-    public void Awake()
+
+    public void Init()
     {
-        SubscribeOnUIEvents();
+        Start();
     }
-    
+
     private void Start()
     {
         _launcher = FindObjectOfType<FusionLauncher>();
         if (_launcher == null)
             _launcher = Instantiate(_launcherPrefab);
-        _launcher.Init();
+        SubscribeOnUIEvents();
 
     }
-    
+
     private void OnDestroy()
     {
         foreach (var subscription in _subscriptions)
@@ -50,6 +71,8 @@ public class NetworkRoomOpener : MonoBehaviour
         }
     }
     
+    
+
     private void SubscribeOnUIEvents()
     {
         IDisposable onGameModeUpdateSubscription = _onGameModeUpdate.Subscribe(gameMode => _gameMode = gameMode);
@@ -67,14 +90,14 @@ public class NetworkRoomOpener : MonoBehaviour
             .Subscribe(_ => ShutdownNetwork());
         _subscriptions.Add(onProgressShowingSubscription);
     }
-    
+
     private void OnEnterRoom()
     {
         _launcher = FindObjectOfType<FusionLauncher>();
         if (_launcher == null)
             _launcher = Instantiate(_launcherPrefab);
 
-        LevelManager lm = FindObjectOfType<LevelManager>();
+        NetworkSceneManager lm = FindObjectOfType<NetworkSceneManager>();
         lm.launcher = _launcher;
 
         _launcher.Launch(_gameMode, _roomName, lm);
@@ -91,4 +114,5 @@ public class NetworkRoomOpener : MonoBehaviour
     }
 
 
+    }
 }

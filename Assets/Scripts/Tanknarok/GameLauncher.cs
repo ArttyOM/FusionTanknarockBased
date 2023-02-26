@@ -18,13 +18,11 @@ namespace Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
+		[SerializeField] private FusionLauncher _launcherPrefab;
+		
 		private MainMenuUI _mainMenuUI;
+		
 		private NetworkRoomOpener _networkRoomOpener;
-
-		private FusionLauncher.ConnectionStatus _status; 
-		private GameMode _gameMode;
-
-		private string _roomName;
 		
 		private void Awake()
 		{
@@ -33,8 +31,14 @@ namespace Tanknarok
 			_mainMenuUI = FindObjectOfType<MainMenuUI>();
 			DontDestroyOnLoad(_mainMenuUI);
 			
-			 _networkRoomOpener = FindObjectOfType<NetworkRoomOpener>();
-			 DontDestroyOnLoad(_networkRoomOpener);
+			 _networkRoomOpener = new NetworkRoomOpener(_launcherPrefab);
 		}
+
+		private void Start()
+		{
+			_networkRoomOpener.Init();
+		}
+		
+		
 	}
 }
