@@ -42,7 +42,7 @@ namespace FusionExamples.Tanknarok
 		public const byte MAX_SCORE = 3;
 
 		private ScoreManager _scoreManager;
-		private NetworkSceneManager _networkSceneManager;
+		private NetworkSceneLoader _networkSceneLoader;
 
 		private bool _restart;
 
@@ -58,7 +58,7 @@ namespace FusionExamples.Tanknarok
 				instance = this;
 
 				// Find managers and UI
-				_networkSceneManager = FindObjectOfType<NetworkSceneManager>(true);
+				_networkSceneLoader = FindObjectOfType<NetworkSceneLoader>(true);
 
 				if (Object.HasStateAuthority)
 				{
@@ -85,7 +85,7 @@ namespace FusionExamples.Tanknarok
           if (lastPlayerStanding != null)
           {
             int winningPlayerIndex = lastPlayerStanding.playerID;
-            int nextLevelIndex = _networkSceneManager.GetRandomLevelIndex();
+            int nextLevelIndex = _networkSceneLoader.GetRandomLevelIndex();
             byte winningPlayerScore = (byte)(lastPlayerStanding.score + 1);
             if (winningPlayerIndex >= 0)
             {
@@ -157,7 +157,7 @@ namespace FusionExamples.Tanknarok
       Runner.SessionInfo.IsOpen = false;
       Runner.SessionInfo.IsVisible = false;
 
-	    LoadLevel(_networkSceneManager.GetRandomLevelIndex(),-1);
+	    LoadLevel(_networkSceneLoader.GetRandomLevelIndex(),-1);
 		}
 		
 		private void LoadLevel(int nextLevelIndex, int winningPlayerIndex)
@@ -175,7 +175,7 @@ namespace FusionExamples.Tanknarok
 			// Start transition
 			WinningPlayerIndex = winningPlayerIndex;
 
-			_networkSceneManager.LoadLevel(nextLevelIndex);
+			_networkSceneLoader.LoadLevel(nextLevelIndex);
 		}
 
 		public void StateAuthorityChanged()

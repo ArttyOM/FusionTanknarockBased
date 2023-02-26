@@ -46,144 +46,9 @@ namespace FusionExamples.FusionHelpers
         {
             SetConnectionStatus(ConnectionStatus.Disconnected, "");
         }
-        
+
         #endregion
 
-
-        #region NetworkRunnerCallbacks
-        public void OnInput(NetworkRunner runner, NetworkInput input)
-        {
-        }
-
-        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
-        {
-        }
-
-        public void OnConnectedToServer(NetworkRunner runner)
-        {
-            Debug.Log("Connected to server");
-            if (runner.GameMode == GameMode.Shared)
-            {
-                Debug.Log("Shared Mode - Spawning Player");
-                InstantiatePlayer(runner, runner.LocalPlayer);
-            }
-
-            SetConnectionStatus(ConnectionStatus.Connected, "");
-        }
-
-        public void OnDisconnectedFromServer(NetworkRunner runner)
-        {
-            Debug.Log("Disconnected from server");
-            SetConnectionStatus(ConnectionStatus.Disconnected, "");
-        }
-
-        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request,
-            byte[] token)
-        {
-            request.Accept();
-        }
-
-        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
-        {
-            Debug.Log($"Connect failed {reason}");
-            SetConnectionStatus(ConnectionStatus.Failed, reason.ToString());
-        }
-
-        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
-        {
-            if (runner.IsServer)
-            {
-                Debug.Log("Hosted Mode - Spawning Player");
-                InstantiatePlayer(runner, player);
-            }
-//			SetConnectionStatus(ConnectionStatus.Connected, "");
-        }
-
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
-        {
-            Debug.Log("Player Left");
-            DespawnPlayer(runner, player);
-
-            SetConnectionStatus(_status, "Player Left");
-        }
-
-        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
-        {
-        }
-
-        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
-        {
-        }
-
-        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
-        {
-        }
-
-        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
-        {
-        }
-
-        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
-        {
-        }
-
-        public void OnSceneLoadStart(NetworkRunner runner)
-        {
-        }
-
-        public void OnSceneLoadDone(NetworkRunner runner)
-        {
-        }
-
-        public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
-        {
-            Debug.Log("OnShutdown");
-            var message = "";
-            switch (shutdownReason)
-            {
-                case GameManager.ShutdownReason_GameAlreadyRunning:
-                    message = "Game in this room already started!";
-                    break;
-                case ShutdownReason.IncompatibleConfiguration:
-                    message = "This room already exist in a different game mode!";
-                    break;
-                case ShutdownReason.Ok:
-                    message = "User terminated network session!";
-                    break;
-                case ShutdownReason.Error:
-                    message = "Unknown network error!";
-                    break;
-                case ShutdownReason.ServerInRoom:
-                    message = "There is already a server/host in this room";
-                    break;
-                case ShutdownReason.DisconnectedByPluginLogic:
-                    message = "The Photon server plugin terminated the network session!";
-                    break;
-                default:
-                    message = shutdownReason.ToString();
-                    break;
-            }
-
-            SetConnectionStatus(ConnectionStatus.Disconnected, message);
-
-            // TODO: This cleanup should be handled by the ClearPools call below, but currently Fusion is not returning pooled objects on shutdown, so...
-            // Destroy all NOs
-            var nos = FindObjectsOfType<NetworkObject>();
-            for (var i = 0; i < nos.Length; i++)
-                Destroy(nos[i].gameObject);
-
-            // Clear all the player registries
-            // TODO: This does not belong in here
-            //PlayerManager.ResetPlayerManager();
-
-            // Reset the object pools
-            _pool.ClearPools();
-
-            if (_runner != null && _runner.gameObject)
-                Destroy(_runner.gameObject);
-        }
-        #endregion
-        
         public async void Launch(GameMode mode, string room,
             INetworkSceneManager sceneLoader)
         {
@@ -279,5 +144,146 @@ namespace FusionExamples.FusionHelpers
 
             SpawnPlayer(runner, playerref);
         }
+
+        #region NetworkRunnerCallbacks withlogic
+
+        public void OnConnectedToServer(NetworkRunner runner)
+        {
+            Debug.Log("Connected to server");
+            if (runner.GameMode == GameMode.Shared)
+            {
+                Debug.Log("Shared Mode - Spawning Player");
+                InstantiatePlayer(runner, runner.LocalPlayer);
+            }
+
+            SetConnectionStatus(ConnectionStatus.Connected, "");
+        }
+
+        public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request,
+            byte[] token)
+        {
+            request.Accept();
+        }
+
+        public void OnDisconnectedFromServer(NetworkRunner runner)
+        {
+            Debug.Log("Disconnected from server");
+            SetConnectionStatus(ConnectionStatus.Disconnected, "");
+        }
+
+        public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+        {
+            Debug.Log($"Connect failed {reason}");
+            SetConnectionStatus(ConnectionStatus.Failed, reason.ToString());
+        }
+
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        {
+            Debug.Log("Player Left");
+            DespawnPlayer(runner, player);
+
+            SetConnectionStatus(_status, "Player Left");
+        }
+
+        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        {
+            if (runner.IsServer)
+            {
+                Debug.Log("Hosted Mode - Spawning Player");
+                InstantiatePlayer(runner, player);
+            }
+//			SetConnectionStatus(ConnectionStatus.Connected, "");
+        }
+        
+                public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
+        {
+            Debug.Log("OnShutdown");
+            var message = "";
+            switch (shutdownReason)
+            {
+                case GameManager.ShutdownReason_GameAlreadyRunning:
+                    message = "Game in this room already started!";
+                    break;
+                case ShutdownReason.IncompatibleConfiguration:
+                    message = "This room already exist in a different game mode!";
+                    break;
+                case ShutdownReason.Ok:
+                    message = "User terminated network session!";
+                    break;
+                case ShutdownReason.Error:
+                    message = "Unknown network error!";
+                    break;
+                case ShutdownReason.ServerInRoom:
+                    message = "There is already a server/host in this room";
+                    break;
+                case ShutdownReason.DisconnectedByPluginLogic:
+                    message = "The Photon server plugin terminated the network session!";
+                    break;
+                default:
+                    message = shutdownReason.ToString();
+                    break;
+            }
+
+            SetConnectionStatus(ConnectionStatus.Disconnected, message);
+
+            // TODO: This cleanup should be handled by the ClearPools call below, but currently Fusion is not returning pooled objects on shutdown, so...
+            // Destroy all NOs
+            var nos = FindObjectsOfType<NetworkObject>();
+            for (var i = 0; i < nos.Length; i++)
+                Destroy(nos[i].gameObject);
+
+            // Clear all the player registries
+            // TODO: This does not belong in here
+            //PlayerManager.ResetPlayerManager();
+
+            // Reset the object pools
+            _pool.ClearPools();
+
+            if (_runner != null && _runner.gameObject)
+                Destroy(_runner.gameObject);
+        }
+
+        #endregion
+
+        #region NetworkRunnerCallbacks without logic
+
+        public void OnInput(NetworkRunner runner, NetworkInput input)
+        {
+        }
+
+        public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
+        {
+        }
+
+        public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
+        {
+        }
+
+        public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+        {
+        }
+
+        public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
+        {
+        }
+
+        public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
+        {
+        }
+
+        public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data)
+        {
+        }
+
+        public void OnSceneLoadStart(NetworkRunner runner)
+        {
+        }
+
+        public void OnSceneLoadDone(NetworkRunner runner)
+        {
+        }
+
+
+        #endregion
     }
 }

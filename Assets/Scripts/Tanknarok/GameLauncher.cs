@@ -22,8 +22,9 @@ namespace Tanknarok
 		
 		private MainMenuUI _mainMenuUI;
 		
-		private NetworkRoomOpener _networkRoomOpener;
 		
+		private NetworkRoomOpener _networkRoomOpener;
+
 		private void Awake()
 		{
 			DontDestroyOnLoad(this);

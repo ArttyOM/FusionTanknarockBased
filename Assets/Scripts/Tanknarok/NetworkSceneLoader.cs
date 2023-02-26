@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Fusion;
 using FusionExamples.FusionHelpers;
+using StaticEvents;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -11,8 +13,11 @@ namespace FusionExamples.Tanknarok
 	/// <summary>
 	/// The LevelManager controls the map - keeps track of spawn points for players and powerups, and spawns powerups at regular intervals.
 	/// </summary>
-	public class NetworkSceneManager : NetworkSceneManagerBase
+	public class NetworkSceneLoader : NetworkSceneManagerBase
 	{
+		private IObserver<FusionLauncher.ConnectionStatus> _onConnectionStatusBroadcaster =
+			MainSceneEvents.OnConnectionStatusBroadcaster;
+		
 		[SerializeField] private int _lobby;
 		[SerializeField] private int[] _levels;
 		[SerializeField] private LevelBehaviour _currentLevel;
@@ -24,7 +29,7 @@ namespace FusionExamples.Tanknarok
 		private ReadyupManager _readyupManager;
 		private CountdownManager _countdownManager;
 
-		public FusionLauncher launcher { get; set; }
+		//public FusionLauncher launcher { get; set; }
 
 		private void Awake()
 		{
@@ -114,7 +119,8 @@ namespace FusionExamples.Tanknarok
 			_transitionEffect.ToggleGlitch(true);
 			_audioEmitter.Play();
 			
-			launcher.SetConnectionStatus( FusionLauncher.ConnectionStatus.Loading, "");
+			//launcher.SetConnectionStatus( FusionLauncher.ConnectionStatus.Loading, "");
+			_onConnectionStatusBroadcaster.OnNext(FusionLauncher.ConnectionStatus.Loading);
 
 			_scoreManager.HideLobbyScore();
 
@@ -142,7 +148,8 @@ namespace FusionExamples.Tanknarok
 			// Delay one frame
 			yield return null;
 
-			launcher.SetConnectionStatus(FusionLauncher.ConnectionStatus.Loaded, "");
+			//launcher.SetConnectionStatus(FusionLauncher.ConnectionStatus.Loaded, "");
+			_onConnectionStatusBroadcaster.OnNext(FusionLauncher.ConnectionStatus.Loaded);
 			
 			// Activate the next level
 			_currentLevel = FindObjectOfType<LevelBehaviour>();
