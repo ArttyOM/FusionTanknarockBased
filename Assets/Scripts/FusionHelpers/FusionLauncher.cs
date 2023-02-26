@@ -40,11 +40,18 @@ namespace FusionExamples.FusionHelpers
         private NetworkRunner _runner;
         private ConnectionStatus _status;
 
+        #region Unity встроенные ивенты
+
         private void Awake()
         {
+            SetConnectionStatus(ConnectionStatus.Disconnected, "");
         }
+        
+        #endregion
 
-public void OnInput(NetworkRunner runner, NetworkInput input)
+
+        #region NetworkRunnerCallbacks
+        public void OnInput(NetworkRunner runner, NetworkInput input)
         {
         }
 
@@ -175,7 +182,8 @@ public void OnInput(NetworkRunner runner, NetworkInput input)
             if (_runner != null && _runner.gameObject)
                 Destroy(_runner.gameObject);
         }
-
+        #endregion
+        
         public async void Launch(GameMode mode, string room,
             INetworkSceneManager sceneLoader)
         {
@@ -270,11 +278,6 @@ public void OnInput(NetworkRunner runner, NetworkInput input)
             }
 
             SpawnPlayer(runner, playerref);
-        }
-
-        public void Init()
-        {
-            SetConnectionStatus(ConnectionStatus.Disconnected, "");
         }
     }
 }

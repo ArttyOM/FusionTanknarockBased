@@ -98,7 +98,7 @@ namespace FusionExamples.Tanknarok
 		private Collider[] _overlaps = new Collider[1];
 		private Collider _collider;
 		private HitboxRoot _hitBoxRoot;
-		private LevelManager _levelManager;
+		private NetworkSceneManager _networkSceneManager;
 		private Vector2 _lastMoveDirection; // Store the previous direction for correct hull rotation
 		private GameObject _deathExplosionInstance;
 		private TankDamageVisual _damageVisuals;
@@ -121,11 +121,11 @@ namespace FusionExamples.Tanknarok
 			_hitBoxRoot = GetComponent<HitboxRoot>();
 		}
 
-		private LevelManager GetLevelManager()
+		private NetworkSceneManager GetLevelManager()
 		{
-			if (_levelManager == null)
-				_levelManager = FindObjectOfType<LevelManager>();
-			return _levelManager;
+			if (_networkSceneManager == null)
+				_networkSceneManager = FindObjectOfType<NetworkSceneManager>();
+			return _networkSceneManager;
 		}
 		
 		public void InitNetworkState(byte maxLives)
