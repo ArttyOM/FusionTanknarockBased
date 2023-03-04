@@ -13,16 +13,13 @@ namespace Tanknarok
 {
 
     /// <summary>
-    /// Хранит актуальный gameMode, roomName,
-    /// 
+    /// Входит и выходит из сетевой комнаты.
     /// </summary>
     public class NetworkRoomOpener : UnityEngine.Object
     {
-        public NetworkRoomOpener(FusionLauncher launcherPrefab)
+        public NetworkRoomOpener(NetworkRunnerCallbacksHandler launcherPrefab)
         {
             _launcherPrefab = launcherPrefab;
-
-
         }
 
         ~NetworkRoomOpener()
@@ -30,7 +27,7 @@ namespace Tanknarok
             OnDestroy();
         }
 
-        [SerializeField] private FusionLauncher _launcherPrefab;
+        private NetworkRunnerCallbacksHandler _launcherPrefab;
 
     #region Слушатели событий
 
@@ -43,24 +40,30 @@ namespace Tanknarok
 
     private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
-    private FusionLauncher.ConnectionStatus _status;
+    private NetworkRunnerCallbacksHandler.ConnectionStatus _status;
+    
+    /// <summary>
+    /// Как создать комнату?
+    /// Соло, Сервер, Хост, Клиент и тд
+    /// </summary>
     private GameMode _gameMode;
 
+    /// <summary>
+    /// Идентифика
+    /// </summary>
     private string _roomName;
-    private FusionLauncher _launcher;
+    private NetworkRunnerCallbacksHandler _launcher;
 
+    /// <summary>
+    /// Почему-то UI ломается, если вызвать на Awake.
+    /// Использовать на Start
+    /// </summary>
     public void Init()
     {
-        Start();
-    }
-
-    private void Start()
-    {
-        _launcher = FindObjectOfType<FusionLauncher>();
+        _launcher = FindObjectOfType<NetworkRunnerCallbacksHandler>();
         if (_launcher == null)
             _launcher = Instantiate(_launcherPrefab);
         SubscribeOnUIEvents();
-
     }
 
     private void OnDestroy()
@@ -70,8 +73,6 @@ namespace Tanknarok
             subscription?.Dispose();
         }
     }
-    
-    
 
     private void SubscribeOnUIEvents()
     {
@@ -93,12 +94,12 @@ namespace Tanknarok
 
     private void OnEnterRoom()
     {
-        _launcher = FindObjectOfType<FusionLauncher>();
+        _launcher = FindObjectOfType<NetworkRunnerCallbacksHandler>();
         if (_launcher == null)
             _launcher = Instantiate(_launcherPrefab);
 
-        NetworkSceneManager lm = FindObjectOfType<NetworkSceneManager>();
-        lm.launcher = _launcher;
+        NetworkSceneLoader lm = FindObjectOfType<NetworkSceneLoader>();
+        //lm.launcher = _launcher;
 
         _launcher.Launch(_gameMode, _roomName, lm);
     }
