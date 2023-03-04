@@ -15,7 +15,7 @@ namespace FusionExamples.Tanknarok
 	/// </summary>
 	public class NetworkSceneLoader : NetworkSceneManagerBase
 	{
-		private IObserver<FusionLauncher.ConnectionStatus> _onConnectionStatusBroadcaster =
+		private IObserver<NetworkRunnerCallbacksHandler.ConnectionStatus> _onConnectionStatusBroadcaster =
 			MainSceneEvents.OnConnectionStatusBroadcaster;
 		
 		[SerializeField] private int _lobby;
@@ -120,7 +120,7 @@ namespace FusionExamples.Tanknarok
 			_audioEmitter.Play();
 			
 			//launcher.SetConnectionStatus( FusionLauncher.ConnectionStatus.Loading, "");
-			_onConnectionStatusBroadcaster.OnNext(FusionLauncher.ConnectionStatus.Loading);
+			_onConnectionStatusBroadcaster.OnNext(NetworkRunnerCallbacksHandler.ConnectionStatus.Loading);
 
 			_scoreManager.HideLobbyScore();
 
@@ -149,7 +149,7 @@ namespace FusionExamples.Tanknarok
 			yield return null;
 
 			//launcher.SetConnectionStatus(FusionLauncher.ConnectionStatus.Loaded, "");
-			_onConnectionStatusBroadcaster.OnNext(FusionLauncher.ConnectionStatus.Loaded);
+			_onConnectionStatusBroadcaster.OnNext(NetworkRunnerCallbacksHandler.ConnectionStatus.Loaded);
 			
 			// Activate the next level
 			_currentLevel = FindObjectOfType<LevelBehaviour>();

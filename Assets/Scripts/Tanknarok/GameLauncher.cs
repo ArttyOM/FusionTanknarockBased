@@ -7,6 +7,7 @@ using StaticEvents;
 using Tanknarok.Menu;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Tanknarok
 {
@@ -18,12 +19,14 @@ namespace Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
-		[SerializeField] private FusionLauncher _launcherPrefab;
+		[FormerlySerializedAs("_launcherPrefab")] [SerializeField] private NetworkRunnerCallbacksHandler _networkRoomOpenerPrefab;
 		
 		private MainMenuUI _mainMenuUI;
 		
 		
 		private NetworkRoomOpener _networkRoomOpener;
+
+		private NetworkRunner _networkRunner;
 
 		private void Awake()
 		{
@@ -32,7 +35,7 @@ namespace Tanknarok
 			_mainMenuUI = FindObjectOfType<MainMenuUI>();
 			DontDestroyOnLoad(_mainMenuUI);
 			
-			 _networkRoomOpener = new NetworkRoomOpener(_launcherPrefab);
+			 _networkRoomOpener = new NetworkRoomOpener(_networkRoomOpenerPrefab);
 		}
 
 		private void Start()

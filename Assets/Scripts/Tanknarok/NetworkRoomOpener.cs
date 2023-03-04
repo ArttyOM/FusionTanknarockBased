@@ -17,7 +17,7 @@ namespace Tanknarok
     /// </summary>
     public class NetworkRoomOpener : UnityEngine.Object
     {
-        public NetworkRoomOpener(FusionLauncher launcherPrefab)
+        public NetworkRoomOpener(NetworkRunnerCallbacksHandler launcherPrefab)
         {
             _launcherPrefab = launcherPrefab;
         }
@@ -27,7 +27,7 @@ namespace Tanknarok
             OnDestroy();
         }
 
-        private FusionLauncher _launcherPrefab;
+        private NetworkRunnerCallbacksHandler _launcherPrefab;
 
     #region Слушатели событий
 
@@ -40,7 +40,7 @@ namespace Tanknarok
 
     private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
 
-    private FusionLauncher.ConnectionStatus _status;
+    private NetworkRunnerCallbacksHandler.ConnectionStatus _status;
     
     /// <summary>
     /// Как создать комнату?
@@ -52,7 +52,7 @@ namespace Tanknarok
     /// Идентифика
     /// </summary>
     private string _roomName;
-    private FusionLauncher _launcher;
+    private NetworkRunnerCallbacksHandler _launcher;
 
     /// <summary>
     /// Почему-то UI ломается, если вызвать на Awake.
@@ -60,7 +60,7 @@ namespace Tanknarok
     /// </summary>
     public void Init()
     {
-        _launcher = FindObjectOfType<FusionLauncher>();
+        _launcher = FindObjectOfType<NetworkRunnerCallbacksHandler>();
         if (_launcher == null)
             _launcher = Instantiate(_launcherPrefab);
         SubscribeOnUIEvents();
@@ -94,7 +94,7 @@ namespace Tanknarok
 
     private void OnEnterRoom()
     {
-        _launcher = FindObjectOfType<FusionLauncher>();
+        _launcher = FindObjectOfType<NetworkRunnerCallbacksHandler>();
         if (_launcher == null)
             _launcher = Instantiate(_launcherPrefab);
 

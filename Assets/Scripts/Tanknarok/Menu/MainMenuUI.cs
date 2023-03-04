@@ -22,9 +22,9 @@ namespace Tanknarok.Menu
         
         [SerializeField] private TMP_InputField _room;
         
-        private FusionLauncher.ConnectionStatus _status;
+        private NetworkRunnerCallbacksHandler.ConnectionStatus _status;
         
-        private readonly IObservable<FusionLauncher.ConnectionStatus> _connectionStatusChangedEvent =
+        private readonly IObservable<NetworkRunnerCallbacksHandler.ConnectionStatus> _connectionStatusChangedEvent =
             MainSceneEvents.OnConnectionStatusChanged;
 
         /// <summary>
@@ -147,27 +147,27 @@ namespace Tanknarok.Menu
            
             switch (_status)
             {
-                case FusionLauncher.ConnectionStatus.Disconnected:
+                case NetworkRunnerCallbacksHandler.ConnectionStatus.Disconnected:
                     _progress.text = "Disconnected!";
                     intro = true;
                     break;
-                case FusionLauncher.ConnectionStatus.Failed:
+                case NetworkRunnerCallbacksHandler.ConnectionStatus.Failed:
                     _progress.text = "Failed!";
                     intro = true;
                     break;
-                case FusionLauncher.ConnectionStatus.Connecting:
+                case NetworkRunnerCallbacksHandler.ConnectionStatus.Connecting:
                     _progress.text = "Connecting";
                     progress = true;
                     break;
-                case FusionLauncher.ConnectionStatus.Connected:
+                case NetworkRunnerCallbacksHandler.ConnectionStatus.Connected:
                     _progress.text = "Connected";
                     progress = true;
                     break;
-                case FusionLauncher.ConnectionStatus.Loading:
+                case NetworkRunnerCallbacksHandler.ConnectionStatus.Loading:
                     _progress.text = "Loading";
                     progress = true;
                     break;
-                case FusionLauncher.ConnectionStatus.Loaded:
+                case NetworkRunnerCallbacksHandler.ConnectionStatus.Loaded:
                     running = true;
                     break;
             }

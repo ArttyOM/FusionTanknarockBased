@@ -12,7 +12,7 @@ namespace FusionExamples.FusionHelpers
     /// <summary>
     ///     Small helper that provides a simple world/player pattern for launching Fusion
     /// </summary>
-    public class FusionLauncher : MonoBehaviour, INetworkRunnerCallbacks
+    public class NetworkRunnerCallbacksHandler : MonoBehaviour, INetworkRunnerCallbacks
     {
         public enum ConnectionStatus
         {
@@ -59,8 +59,11 @@ namespace FusionExamples.FusionHelpers
             DontDestroyOnLoad(gameObject);
 
             if (_runner == null)
+            {
                 _runner = gameObject.AddComponent<NetworkRunner>();
-            _runner.name = name;
+            }
+                
+            //_runner.name = name;
             _runner.ProvideInput = mode != GameMode.Server;
 
             if (_pool == null)
