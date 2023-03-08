@@ -1,11 +1,20 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using StaticEvents;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using static FusionExamples.FusionHelpers.NetworkRunnerCallbacksHandler;
 
 namespace FusionExamples.Tanknarok
 {
 	public class CameraScreenFXBehaviour : MonoBehaviour
 	{
+		private readonly IObservable<ConnectionStatus> _onConnectionStatusChanged =
+			MainSceneEvents.OnConnectionStatusChanged;
+
+		private IDisposable _onConnectionStatusChangedSubscription;
+
 		Kino.DigitalGlitch glitchEffect;
 		[SerializeField] private float durationToTarget = 0.3f;
 		float timer = 0;
@@ -17,6 +26,14 @@ namespace FusionExamples.Tanknarok
 		{
 			GetComponent<PostProcessLayer>().enabled = !Application.isMobilePlatform;
 			GetComponent<PostProcessVolume>().enabled = !Application.isMobilePlatform;
+			
+			_onConnectionStatusChangedSubscription = _onConnectionStatusChanged.Where(x => x== ConnectionStatus.Loading)
+				.Subscribe(_=>ToggleGlitch(true));
+		}
+
+		private void OnDestroy()
+		{
+			_onConnectionStatusChangedSubscription.Dispose();
 		}
 
 		void Start()

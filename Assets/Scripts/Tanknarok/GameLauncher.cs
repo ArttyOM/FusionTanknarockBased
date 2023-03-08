@@ -19,11 +19,10 @@ namespace Tanknarok
 	/// </summary>
 	public class GameLauncher : MonoBehaviour
 	{
-		[FormerlySerializedAs("_launcherPrefab")] [SerializeField] private NetworkRunnerCallbacksHandler _networkRoomOpenerPrefab;
+		[SerializeField] private NetworkRunnerCallbacksHandler _networkRoomOpenerPrefab;
 		
 		private MainMenuUI _mainMenuUI;
-		
-		
+
 		private NetworkRoomOpener _networkRoomOpener;
 
 		private NetworkRunner _networkRunner;

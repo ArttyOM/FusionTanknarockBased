@@ -17,9 +17,9 @@ namespace Tanknarok
     /// </summary>
     public class NetworkRoomOpener : UnityEngine.Object
     {
-        public NetworkRoomOpener(NetworkRunnerCallbacksHandler launcherPrefab)
+        public NetworkRoomOpener(NetworkRunnerCallbacksHandler networkRoomOpenerPrefab)
         {
-            _launcherPrefab = launcherPrefab;
+            _networkRoomOpenerPrefab = networkRoomOpenerPrefab;
         }
 
         ~NetworkRoomOpener()
@@ -27,7 +27,7 @@ namespace Tanknarok
             OnDestroy();
         }
 
-        private NetworkRunnerCallbacksHandler _launcherPrefab;
+        private NetworkRunnerCallbacksHandler _networkRoomOpenerPrefab;
 
     #region Слушатели событий
 
@@ -52,7 +52,7 @@ namespace Tanknarok
     /// Идентифика
     /// </summary>
     private string _roomName;
-    private NetworkRunnerCallbacksHandler _launcher;
+    private NetworkRunnerCallbacksHandler _networkRoomOpener;
 
     /// <summary>
     /// Почему-то UI ломается, если вызвать на Awake.
@@ -60,9 +60,9 @@ namespace Tanknarok
     /// </summary>
     public void Init()
     {
-        _launcher = FindObjectOfType<NetworkRunnerCallbacksHandler>();
-        if (_launcher == null)
-            _launcher = Instantiate(_launcherPrefab);
+        _networkRoomOpener = FindObjectOfType<NetworkRunnerCallbacksHandler>();
+        if (_networkRoomOpener == null)
+            _networkRoomOpener = Instantiate(_networkRoomOpenerPrefab);
         SubscribeOnUIEvents();
     }
 
@@ -94,14 +94,14 @@ namespace Tanknarok
 
     private void OnEnterRoom()
     {
-        _launcher = FindObjectOfType<NetworkRunnerCallbacksHandler>();
-        if (_launcher == null)
-            _launcher = Instantiate(_launcherPrefab);
+        _networkRoomOpener = FindObjectOfType<NetworkRunnerCallbacksHandler>();
+        if (_networkRoomOpener == null)
+            _networkRoomOpener = Instantiate(_networkRoomOpenerPrefab);
 
         NetworkSceneLoader lm = FindObjectOfType<NetworkSceneLoader>();
         //lm.launcher = _launcher;
 
-        _launcher.Launch(_gameMode, _roomName, lm);
+        _networkRoomOpener.Launch(_gameMode, _roomName, lm);
     }
 
     private void ShutdownNetwork()

@@ -103,6 +103,7 @@ namespace FusionExamples.Tanknarok
 
 		public void Restart(ShutdownReason shutdownReason)
 		{
+			Debug.LogWarning("GameManager Restart");
 			if (!Runner.IsShutdown)
 			{
 				// Calling with destroyGameObject false because we do this in the OnShutdown callback on FusionLauncher
