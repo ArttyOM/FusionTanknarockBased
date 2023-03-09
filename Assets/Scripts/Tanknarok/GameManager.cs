@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using Tanknarok;
 
 namespace FusionExamples.Tanknarok
 {

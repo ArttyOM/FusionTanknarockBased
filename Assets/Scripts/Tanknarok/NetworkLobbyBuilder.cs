@@ -15,14 +15,14 @@ namespace Tanknarok
     /// <summary>
     /// Входит и выходит из сетевой комнаты.
     /// </summary>
-    public class NetworkRoomOpener : UnityEngine.Object
+    public class NetworkLobbyBuilder : UnityEngine.Object
     {
-        public NetworkRoomOpener(NetworkRunnerCallbacksHandler networkRoomOpenerPrefab)
+        public NetworkLobbyBuilder(NetworkRunnerCallbacksHandler networkRoomOpenerPrefab)
         {
             _networkRoomOpenerPrefab = networkRoomOpenerPrefab;
         }
 
-        ~NetworkRoomOpener()
+        ~NetworkLobbyBuilder()
         {
             OnDestroy();
         }

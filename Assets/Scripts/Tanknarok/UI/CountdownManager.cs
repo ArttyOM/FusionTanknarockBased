@@ -1,11 +1,17 @@
+using System;
 using System.Collections;
+using Tanknarok;
 using UnityEngine;
 using TMPro;
+using UniRx;
 
 namespace FusionExamples.Tanknarok
 {
 	public class CountdownManager : MonoBehaviour
 	{
+		private IObservable<Unit> _networkSceneLoaderAwaken = NetworkSceneLoader.NetworkSceneLoaderInitialized;
+		private IDisposable _networkSceneLoaderAwakenSubscription;
+		
 		[SerializeField] private float _countdownFrom;
 		[SerializeField] private AnimationCurve _countdownCurve;
 		[SerializeField] private TextMeshProUGUI _countdownUI;
@@ -59,6 +65,17 @@ namespace FusionExamples.Tanknarok
 			_countdownUI.gameObject.SetActive(false);
 
 			callback?.Invoke();
+		}
+
+		public void Init()
+		{
+			_networkSceneLoaderAwakenSubscription = _networkSceneLoaderAwaken
+				.Subscribe(_ => Reset());
+		}
+		
+		private void OnDestroy()
+		{
+			_networkSceneLoaderAwakenSubscription?.Dispose();
 		}
 	}
 }

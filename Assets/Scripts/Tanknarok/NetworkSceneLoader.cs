@@ -3,18 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using Fusion;
 using FusionExamples.FusionHelpers;
+using FusionExamples.Tanknarok;
 using StaticEvents;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-namespace FusionExamples.Tanknarok
+namespace Tanknarok
 {
 	/// <summary>
-	/// The LevelManager controls the map - keeps track of spawn points for players and powerups, and spawns powerups at regular intervals.
+	/// Загружает по запросу нужную игровую сцену
 	/// </summary>
 	public class NetworkSceneLoader : NetworkSceneManagerBase
 	{
+		public static IObservable<Unit> NetworkSceneLoaderInitialized => NetworkSceneLoaderInitializedEvent;
+		private static readonly Subject<Unit> NetworkSceneLoaderInitializedEvent = new Subject<Unit>();
+
 		private IObserver<NetworkRunnerCallbacksHandler.ConnectionStatus> _onConnectionStatusBroadcaster =
 			MainSceneEvents.OnConnectionStatusBroadcaster;
 		
@@ -29,18 +34,19 @@ namespace FusionExamples.Tanknarok
 		private ScoreManager _scoreManager;
 		private ReadyupManager _readyupManager;
 		private CountdownManager _countdownManager;
-
-		//public FusionLauncher launcher { get; set; }
-
-		private void Awake()
+		
+		public void Init()
 		{
+			NetworkSceneLoaderInitializedEvent.OnNext(new Unit());
+			
+			
 			_scoreManager = FindObjectOfType<ScoreManager>(true);
 			_readyupManager = FindObjectOfType<ReadyupManager>(true);
 			_countdownManager = FindObjectOfType<CountdownManager>(true);
-
-			_countdownManager.Reset();
-			_scoreManager.HideLobbyScore();
-			_readyupManager.HideUI();
+			
+			//_countdownManager.Reset();
+			//_scoreManager.HideLobbyScore();
+			//_readyupManager.HideUI();
 			
 			_audioEmitter = GetComponent<AudioEmitter>();
 		}
