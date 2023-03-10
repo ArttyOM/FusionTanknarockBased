@@ -1,10 +1,16 @@
+using System;
 using System.Collections.Generic;
+using Tanknarok;
+using UniRx;
 using UnityEngine;
 
 namespace FusionExamples.Tanknarok
 {
 	public class ReadyupManager : MonoBehaviour
 	{
+		private IObservable<Unit> _networkSceneLoaderAwaken = NetworkSceneLoader.NetworkSceneLoaderInitialized;
+		private IDisposable _networkSceneLoaderAwakenSubscription;
+		
 		[SerializeField] private Transform _readyUIParent;
 		[SerializeField] private ReadyupIndicator _readyPrefab;
 		[SerializeField] private bool _allowSoloPlay = false;
@@ -62,6 +68,19 @@ namespace FusionExamples.Tanknarok
 				ui.Dirty();
 			}
 			_allPlayersReady = false;
+		}
+
+
+		
+		public void Init()
+		{
+			_networkSceneLoaderAwakenSubscription = _networkSceneLoaderAwaken
+				.Subscribe(_ => HideUI());
+		}
+		
+		private void OnDestroy()
+		{
+			_networkSceneLoaderAwakenSubscription?.Dispose();
 		}
 	}
 }

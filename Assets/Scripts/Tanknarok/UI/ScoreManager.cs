@@ -1,11 +1,17 @@
+using System;
 using System.Collections.Generic;
 using FusionExamples.Utility;
+using Tanknarok;
+using UniRx;
 using UnityEngine;
 
 namespace FusionExamples.Tanknarok
 {
 	public class ScoreManager : MonoBehaviour
 	{
+		private IObservable<Unit> _networkSceneLoaderAwaken = NetworkSceneLoader.NetworkSceneLoaderInitialized;
+		private IDisposable _networkSceneLoaderAwakenSubscription;
+		
 		[SerializeField] private ScoreGameUI _scoreGamePrefab;
 		[SerializeField] private Transform _uiScoreParent;
 
@@ -20,6 +26,17 @@ namespace FusionExamples.Tanknarok
 
 		private Dictionary<int, ScoreLobbyUI> _lobbyScoreUI = new Dictionary<int, ScoreLobbyUI>();
 		private Dictionary<int, ScoreGameUI> _gameScoreUI = new Dictionary<int, ScoreGameUI>();
+
+		public void Init()
+		{
+			_networkSceneLoaderAwakenSubscription = _networkSceneLoaderAwaken
+				.Subscribe(_ => HideLobbyScore());
+		}
+		
+		private void OnDestroy()
+		{
+			_networkSceneLoaderAwakenSubscription?.Dispose();
+		}
 
 		public void UpdateScore(int playerId, byte score)
 		{
@@ -75,6 +92,8 @@ namespace FusionExamples.Tanknarok
 					container.Value.ResetScore();
 			}
 		}
+
+		
 
 		// Move and play the confetti by the winning players score
 		private void Celebrate(int winningPlayer)

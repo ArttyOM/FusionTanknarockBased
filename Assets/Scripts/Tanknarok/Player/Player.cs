@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using Fusion;
+using Tanknarok;
 using UnityEngine;
 
 namespace FusionExamples.Tanknarok

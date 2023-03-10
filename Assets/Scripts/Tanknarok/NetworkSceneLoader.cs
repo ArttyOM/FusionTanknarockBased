@@ -3,18 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using Fusion;
 using FusionExamples.FusionHelpers;
+using FusionExamples.Tanknarok;
 using StaticEvents;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
-namespace FusionExamples.Tanknarok
+namespace Tanknarok
 {
 	/// <summary>
-	/// The LevelManager controls the map - keeps track of spawn points for players and powerups, and spawns powerups at regular intervals.
+	/// Загружает по запросу нужную игровую сцену
 	/// </summary>
 	public class NetworkSceneLoader : NetworkSceneManagerBase
 	{
+		public static IObservable<Unit> NetworkSceneLoaderInitialized => NetworkSceneLoaderInitializedEvent;
+		private static readonly Subject<Unit> NetworkSceneLoaderInitializedEvent = new Subject<Unit>();
+
 		private IObserver<NetworkRunnerCallbacksHandler.ConnectionStatus> _onConnectionStatusBroadcaster =
 			MainSceneEvents.OnConnectionStatusBroadcaster;
 		
@@ -22,34 +27,39 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private int[] _levels;
 		[SerializeField] private LevelBehaviour _currentLevel;
 		[SerializeField] private CameraScreenFXBehaviour _transitionEffect;
-		[SerializeField] private AudioEmitter _audioEmitter;
+		
+		private AudioEmitter _audioEmitter;
 		
 		private Scene _loadedScene;
 		private ScoreManager _scoreManager;
 		private ReadyupManager _readyupManager;
 		private CountdownManager _countdownManager;
-
-		//public FusionLauncher launcher { get; set; }
-
-		private void Awake()
+		
+		public void Init()
 		{
+			NetworkSceneLoaderInitializedEvent.OnNext(new Unit());
+			
+			
 			_scoreManager = FindObjectOfType<ScoreManager>(true);
 			_readyupManager = FindObjectOfType<ReadyupManager>(true);
 			_countdownManager = FindObjectOfType<CountdownManager>(true);
-
-			_countdownManager.Reset();
-			_scoreManager.HideLobbyScore();
-			_readyupManager.HideUI();
+			
+			_audioEmitter = GetComponent<AudioEmitter>();
 		}
 
 		protected override void Shutdown(NetworkRunner runner)
 		{
+			Debug.LogWarning("NetworkSceneLoader Shutdown Start");
 			base.Shutdown(runner);
 			_currentLevel = null;
 			if(_loadedScene!=default)
 				SceneManager.UnloadSceneAsync(_loadedScene);
 			_loadedScene = default;
+			
+			Debug.LogWarning("ResetPlayerManager Called here");
 			PlayerManager.ResetPlayerManager();
+			
+			Debug.LogWarning("NetworkSceneLoader Shutdown End");
 		}
 
 		// Get a random level
@@ -74,6 +84,34 @@ namespace FusionExamples.Tanknarok
 			Runner.SetActiveScene(nextLevelIndex < 0 ? _lobby:_levels[nextLevelIndex]);
 		}
 
+		private IEnumerator OnWinnerAnnouncedHandle(int winner)
+		{
+			yield return new WaitForSeconds(1.0f);
+
+			InputController.fetchInput = false;
+
+			// Despawn players with a small delay between each one
+			Debug.Log("De-spawning all tanks");
+			for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
+			{
+				Debug.Log($"De-spawning tank {i}:{PlayerManager.allPlayers[i]}");
+				PlayerManager.allPlayers[i].DespawnTank();
+				yield return new WaitForSeconds(0.1f);
+			}
+
+			yield return new WaitForSeconds(1.5f - PlayerManager.allPlayers.Count * 0.1f);
+
+			Debug.Log("Despawned all tanks");
+			// Players have despawned
+
+			if (winner != -1)
+			{
+				_scoreManager.UpdateScore(winner, PlayerManager.GetPlayerFromID(winner).score);
+				yield return new WaitForSeconds(1.5f);
+				_scoreManager.HideUiScoreAndReset(false);
+			}
+		}
+		
 		protected override IEnumerator SwitchScene(SceneRef prevScene, SceneRef newScene, FinishedLoadingDelegate finished)
 		{
 			Debug.Log($"Switching Scene from {prevScene} to {newScene}");
@@ -90,38 +128,12 @@ namespace FusionExamples.Tanknarok
 
 			if (prevScene > 0)
 			{
-				yield return new WaitForSeconds(1.0f);
-
-				InputController.fetchInput = false;
-
-				// Despawn players with a small delay between each one
-				Debug.Log("De-spawning all tanks");
-				for (int i = 0; i < PlayerManager.allPlayers.Count; i++)
-				{
-					Debug.Log($"De-spawning tank {i}:{PlayerManager.allPlayers[i]}");
-					PlayerManager.allPlayers[i].DespawnTank();
-					yield return new WaitForSeconds(0.1f);
-				}
-
-				yield return new WaitForSeconds(1.5f - PlayerManager.allPlayers.Count * 0.1f);
-
-				Debug.Log("Despawned all tanks");
-				// Players have despawned
-
-				if (winner != -1)
-				{
-					_scoreManager.UpdateScore(winner, PlayerManager.GetPlayerFromID(winner).score);
-					yield return new WaitForSeconds(1.5f);
-					_scoreManager.HideUiScoreAndReset(false);
-				}
+				yield return OnWinnerAnnouncedHandle(winner);
 			}
-
-			_transitionEffect.ToggleGlitch(true);
-			_audioEmitter.Play();
 			
-			//launcher.SetConnectionStatus( FusionLauncher.ConnectionStatus.Loading, "");
 			_onConnectionStatusBroadcaster.OnNext(NetworkRunnerCallbacksHandler.ConnectionStatus.Loading);
-
+			//_transitionEffect.ToggleGlitch(true);
+			_audioEmitter.Play();
 			_scoreManager.HideLobbyScore();
 
 			yield return null;
