@@ -44,10 +44,6 @@ namespace Tanknarok
 			_readyupManager = FindObjectOfType<ReadyupManager>(true);
 			_countdownManager = FindObjectOfType<CountdownManager>(true);
 			
-			//_countdownManager.Reset();
-			//_scoreManager.HideLobbyScore();
-			//_readyupManager.HideUI();
-			
 			_audioEmitter = GetComponent<AudioEmitter>();
 		}
 
