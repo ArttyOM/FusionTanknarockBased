@@ -297,7 +297,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5022260158743060675}
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.641, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1050,7 +1050,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8041608635261517176}
-  m_Mesh: {fileID: 1420180616690215640, guid: 5d663bf0215b8ff449da8e5daa5c6d13, type: 3}
+  m_Mesh: {fileID: 1420180616690215640, guid: d6473df0ee25e9c4c9b89000ff2f3292, type: 3}
 --- !u!23 &2302327643812161395
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1499,10 +1499,14 @@ PrefabInstance:
     - target: {fileID: 1458823179098658991, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -6099749113586493436, guid: 5d663bf0215b8ff449da8e5daa5c6d13, type: 3}
+      objectReference: {fileID: -6099749113586493436, guid: d6473df0ee25e9c4c9b89000ff2f3292, type: 3}
     - target: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_RootOrder
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1514,7 +1518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.023
       objectReference: {fileID: 0}
     - target: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1544,6 +1548,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2664005909477909567, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2664005909477909567, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4608214263033281930, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4608214263033281930, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.512
+      objectReference: {fileID: 0}
+    - target: {fileID: 4608214263033281930, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.38
+      objectReference: {fileID: 0}
     - target: {fileID: 4742266226586460244, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
@@ -1560,6 +1584,18 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[2]
       value: 
       objectReference: {fileID: -1580535799172915004, guid: 36aa5f4aa08efff47a88ad53891eb371, type: 3}
+    - target: {fileID: 5002116699142556863, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5002116699142556863, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.359
+      objectReference: {fileID: 0}
+    - target: {fileID: 5002116699142556863, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.611
+      objectReference: {fileID: 0}
     - target: {fileID: 5790566248479023112, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: m_Name
       value: weapon_primary_staff
