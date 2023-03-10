@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace FusionExamples.Tanknarok
 {
+	/// <summary>
+	/// Компонент служебный, не синглтон!
+	/// </summary>
 	[RequireComponent(typeof(AudioSource))]
 	public class AudioEmitter : MonoBehaviour
 	{
