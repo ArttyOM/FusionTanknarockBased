@@ -151,7 +151,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -8938275100154560894, guid: 19d51d8e32ac4a54894d7622b5b3b01c, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 3273cb8ed31b38543835786a3bfa4ed0, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 2dc7d7c462cc78844b38a4299db40db2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1542,7 +1542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474632e4739f4a8ab1338ef00b9bcc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _launcherPrefab: {fileID: -2484961027511208646, guid: d75c7321674a2d94ab9c8517fde0c30f, type: 3}
+  _networkRoomOpenerPrefab: {fileID: -2484961027511208646, guid: d75c7321674a2d94ab9c8517fde0c30f, type: 3}
 --- !u!1 &604924947
 GameObject:
   m_ObjectHideFlags: 0
@@ -3465,7 +3465,6 @@ MonoBehaviour:
   _levels: 0200000003000000
   _currentLevel: {fileID: 0}
   _transitionEffect: {fileID: 825814042}
-  _audioEmitter: {fileID: 1353448201}
 --- !u!4 &1353448200
 Transform:
   m_ObjectHideFlags: 0
