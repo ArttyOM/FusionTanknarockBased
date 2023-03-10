@@ -9,7 +9,7 @@ namespace FusionExamples.Tanknarok
 	{
 		[SerializeField] private GameObject _disconnectInfoText;
 		[SerializeField] private GameObject _readyupInfoText;
-
+		[SerializeField] private GameObject _abilityQInfoText;
 		private float _delay;
 
 		private void Update()
@@ -25,7 +25,7 @@ namespace FusionExamples.Tanknarok
 					if (player.ready)
 						readyCount++;
 				}
-
+				_abilityQInfoText.SetActive(readyCount < PlayerManager.allPlayers.Count);
 				_disconnectInfoText.SetActive(readyCount<PlayerManager.allPlayers.Count);
 				_readyupInfoText.SetActive(readyCount<PlayerManager.allPlayers.Count && PlayerManager.allPlayers.Count > 1);
 			}

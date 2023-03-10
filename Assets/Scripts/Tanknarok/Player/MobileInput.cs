@@ -47,7 +47,7 @@ public class MobileInput : MonoBehaviour
 		if (current.magnitude > knob.rect.width / 2)
 			current = current.normalized * knob.rect.width / 2;
 		
-		knob.anchoredPosition = current;
+		knob.anchoredPosition = current; 
 	}
 
 	public void SetLeft(bool active, Vector2 down, Vector2 current)

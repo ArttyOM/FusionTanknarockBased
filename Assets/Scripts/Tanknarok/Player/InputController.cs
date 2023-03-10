@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
@@ -29,13 +31,16 @@ namespace FusionExamples.Tanknarok
 		private bool _rightTouchWasDown;
 		private bool _primaryFire;
 		private bool _secondaryFire;
-
+		
+		
 		private MobileInput _mobileInput;
 
-		/// <summary>
-		/// Hook up to the Fusion callbacks so we can handle the input polling
-		/// </summary>
-		public override void Spawned()
+		public bool AbilityQ { get; set; }
+
+        /// <summary>
+        /// Hook up to the Fusion callbacks so we can handle the input polling
+        /// </summary>
+        public override void Spawned()
 		{
 			_mobileInput = FindObjectOfType<MobileInput>(true);
 			_player = GetComponent<Player>();
@@ -62,7 +67,7 @@ namespace FusionExamples.Tanknarok
 
 				_frameworkInput.aimDirection = _aimDelta.normalized;
 				
-				_frameworkInput.moveDirection = _moveDelta.normalized;
+				_frameworkInput.moveDirection = _moveDelta;
 
 				if ( _primaryFire )
 				{
@@ -99,27 +104,28 @@ namespace FusionExamples.Tanknarok
 		private void Update()
 		{
 			ToggleReady = ToggleReady || Input.GetKeyDown(KeyCode.R);
-
+			
 			if (Input.mousePresent)
 			{
-				if (Input.GetMouseButton(0) )
+				if (Input.GetMouseButton(0))
 					_primaryFire = true;
-
+				
 				if (Input.GetMouseButton(1) )
 					_secondaryFire = true;
 
 				_moveDelta = Vector2.zero;
+
 				
-				if (Input.GetKey(KeyCode.W))
+				if (Input.GetKey(KeyCode.W) && !AbilityQ)
 					_moveDelta += Vector2.up;
 
-				if (Input.GetKey(KeyCode.S))
+				if (Input.GetKey(KeyCode.S) && !AbilityQ)
 					_moveDelta += Vector2.down;
 
-				if (Input.GetKey(KeyCode.A))
+				if (Input.GetKey(KeyCode.A) && !AbilityQ)
 					_moveDelta += Vector2.left;
 
-				if (Input.GetKey(KeyCode.D))
+				if (Input.GetKey(KeyCode.D) && !AbilityQ)
 					_moveDelta += Vector2.right;
 
 				Vector3 mousePos = Input.mousePosition;
@@ -136,9 +142,14 @@ namespace FusionExamples.Tanknarok
 						mouseCollisionPoint = hit.point;
 					}
 				}
-
+				
 				Vector3 aimDirection = mouseCollisionPoint - _player.turretPosition;
 				_aimDelta = new Vector2(aimDirection.x,aimDirection.z );
+
+				if (Input.GetMouseButton(1))
+				{
+					_moveDelta = aimDirection;
+				}
 			}
 			else if (Input.touchSupported)
 			{
