@@ -78,6 +78,13 @@ namespace Tanknarok.Menu
             }
         }
 
+        public void StartRoom(string userId)
+        {
+            _onRoomNameBroadcaster.OnNext(userId);
+            BroadcastModeChanged(GameMode.Shared);
+            _onEnterRoomBroadcaster.OnNext(new Unit());
+        }
+
         private void Awake()
         {
 
