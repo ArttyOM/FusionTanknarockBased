@@ -143,7 +143,7 @@ MonoBehaviour:
       m_Bits: 257
     areaRadius: 2
     areaImpulse: 25
-    areaDamage: 5
+    areaDamage: 50
     speed: 25
     radius: 0.25
     gravity: -10
