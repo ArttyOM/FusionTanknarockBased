@@ -99,9 +99,10 @@ namespace FusionExamples.Tanknarok
 		private void Update()
 		{
 			ToggleReady = ToggleReady || Input.GetKeyDown(KeyCode.R);
-
+			
 			if (Input.mousePresent)
 			{
+				
 				if (Input.GetMouseButton(0) )
 					_primaryFire = true;
 
@@ -138,6 +139,7 @@ namespace FusionExamples.Tanknarok
 				}
 
 				Vector3 aimDirection = mouseCollisionPoint - _player.turretPosition;
+				
 				_aimDelta = new Vector2(aimDirection.x,aimDirection.z );
 			}
 			else if (Input.touchSupported)
