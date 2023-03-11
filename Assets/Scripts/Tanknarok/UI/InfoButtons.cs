@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace FusionExamples.Tanknarok
 {
@@ -27,7 +28,17 @@ namespace FusionExamples.Tanknarok
 				}
 
 				_disconnectInfoText.SetActive(readyCount<PlayerManager.allPlayers.Count);
-				_readyupInfoText.SetActive(readyCount<PlayerManager.allPlayers.Count && PlayerManager.allPlayers.Count > 1);
+				bool showReadyHint = false;
+				for (int i = 0; i < SceneManager.sceneCount; i++)
+				{
+					if (SceneManager.GetSceneAt(i).name.Equals("Lobby"))
+					{
+						showReadyHint = (readyCount < PlayerManager.allPlayers.Count);
+						break;
+					}
+				}
+
+				_readyupInfoText.SetActive(showReadyHint);
 			}
 		}
 	}

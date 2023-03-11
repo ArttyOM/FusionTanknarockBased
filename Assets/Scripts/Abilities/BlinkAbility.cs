@@ -26,7 +26,12 @@ namespace Abilities
         {
             _canBeReleased = true;
         }
-        
+
+        private void OnDestroy()
+        {
+            ActivateSubscriber?.Dispose();
+        }
+
         // public void Init(NetworkCharacterControllerPrototype characterController)
         // {
         //     _cc = characterController;
@@ -71,7 +76,11 @@ namespace Abilities
         private void Shift()
          {
              if (!_canBeReleased)
+             {
+                 Debug.LogWarning("Release вызван, хотя недоступен");
                  return;
+             }
+                 
              var _current = _cc.ReadPosition();
              _current.x -= _aimDirection.x * 2;
              _current.z -= _aimDirection.y * 2;
