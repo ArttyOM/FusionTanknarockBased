@@ -70,11 +70,11 @@ namespace FusionExamples.Tanknarok
 					_frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_PRIMARY;
 				}
 
-				if ( _secondaryFire )
-				{
-					_secondaryFire = false;
-					_frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_SECONDARY;
-				}
+				// if ( _secondaryFire )
+				// {
+				// 	_secondaryFire = false;
+				// 	_frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_SECONDARY;
+				// }
 
 				if (ToggleReady)
 				{
