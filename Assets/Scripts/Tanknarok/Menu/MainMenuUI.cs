@@ -19,7 +19,13 @@ namespace Tanknarok.Menu
         [SerializeField] private Panel _uiProgress;
         [SerializeField] private Panel _uiRoom;
         [SerializeField] private GameObject _uiGame;
-        
+        public GameObject GoUnityScript;
+
+        public void ResponseFromJsOk()
+        {
+            CloseStartThenShowUiRoom();
+        }
+
         [SerializeField] private TMP_InputField _room;
         
         private NetworkRunnerCallbacksHandler.ConnectionStatus _status;
@@ -51,7 +57,7 @@ namespace Tanknarok.Menu
         public void OnHostOptions()
         {
             BroadcastModeChanged(GameMode.Host);
-            CloseStartThenShowUiRoom();
+            GoUnityScript.GetComponent<UnityScript>().RequestJs();       
         }
 
         public void OnJoinOptions()
