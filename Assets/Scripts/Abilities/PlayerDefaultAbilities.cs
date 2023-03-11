@@ -15,8 +15,6 @@ namespace Abilities
 
         private BlinkAbility _blinkAbility;
         private FireBallAbility _fireBallAbility = new FireBallAbility();
-        
-        
 
         public void BindAbilitiesModelsAndViews()
         {
