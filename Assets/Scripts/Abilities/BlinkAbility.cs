@@ -37,7 +37,6 @@ namespace Abilities
                 _view = value;
                 ActivateSubscriber?.Dispose();
                 ActivateSubscriber = _view.AbilityActivated.Subscribe(_=> Activate());
-                
             }
         }
 
@@ -55,13 +54,13 @@ namespace Abilities
             if (_canBeReleased)
             {
                 Debug.LogWarning("Blink Activated and can be released");
+                Release();
             }
             else
             {
                 Debug.LogWarning("Blink Activated but on cooldown");
+                
             }
-
-            Release();
         }
         
         private void Shift()

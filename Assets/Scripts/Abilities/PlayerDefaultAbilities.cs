@@ -20,7 +20,7 @@ namespace Abilities
 
         public void BindAbilitiesModelsAndViews()
         {
-            var views =FindObjectsOfType<AbilityView>();
+            var views = FindObjectsOfType<AbilityView>(true);
             for (int i = 0; i < views.Length; i++)
             {
                 switch (views[i].GetAbilityType)
