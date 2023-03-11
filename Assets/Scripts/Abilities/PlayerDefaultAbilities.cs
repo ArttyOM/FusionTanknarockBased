@@ -8,13 +8,13 @@ using UnityEngine.UI;
 
 namespace Abilities
 {
-    [RequireComponent(typeof(BlinkAbility))]
+
     public class PlayerDefaultAbilities:  NetworkBehaviour
     {
         IObservable<AbilityType> _activated = AbilitiesEvents.Activated;
 
-        private BlinkAbility _blinkAbility;
-        private FireBallAbility _fireBallAbility = new FireBallAbility();
+        [SerializeField]private BlinkAbility _blinkAbility;
+        [SerializeField] private FireBallAbility _fireBallAbility;
 
         public void BindAbilitiesModelsAndViews()
         {
@@ -51,8 +51,8 @@ namespace Abilities
         // }
         public void InitAbilities(NetworkCharacterControllerPrototype characterController)
         {
-            _blinkAbility=GetComponent<BlinkAbility>();
-            _blinkAbility.Init(characterController);
+            //_blinkAbility.Init(characterController);
+            
         }
 
         public void SetDirections(Vector2 moveDirection, Vector2 aimDirection)

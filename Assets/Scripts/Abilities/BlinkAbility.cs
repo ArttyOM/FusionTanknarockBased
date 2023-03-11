@@ -18,21 +18,21 @@ namespace Abilities
 
         private bool _canBeReleased = false;
         
-        private NetworkCharacterControllerPrototype _cc;
+        [SerializeField] private NetworkCharacterControllerPrototype _cc;
         private Vector2 _aimDirection;
         private Vector2 _moveDirection;
 
         private void Awake()
         {
-            _cc = GetComponent<NetworkCharacterControllerPrototype>();
-        }
-        
-        public void Init(NetworkCharacterControllerPrototype characterController)
-        {
-            _cc = characterController;
-
             _canBeReleased = true;
         }
+        
+        // public void Init(NetworkCharacterControllerPrototype characterController)
+        // {
+        //     _cc = characterController;
+        //
+        //     _canBeReleased = true;
+        // }
         
         public AbilityView View
         {

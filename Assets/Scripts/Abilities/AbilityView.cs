@@ -4,7 +4,10 @@ using TMPro;
 using UniRx;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Unit = UniRx.Unit;
 
@@ -27,7 +30,11 @@ namespace Abilities
         [SerializeField] private TextMeshProUGUI abilityName;
 
         [SerializeField] private KeyCode _hotKey = KeyCode.None;
-        
+        [SerializeField] private bool _useMouseButton = true;
+        [SerializeField] private MouseButton _mouseButtonKey = MouseButton.Middle;
+
+        [SerializeField] private GameObject _leftButtonHint;
+        [FormerlySerializedAs("_rightButtonGint")] [SerializeField] private GameObject _rightButtonHint;
         
         private IObserver<AbilityType> _onButtonClick = AbilitiesEvents.ActivatedBroadcaster;
 
@@ -39,6 +46,7 @@ namespace Abilities
         private float _currentCooldown = 0;
         private IDisposable _cooldownSubscription;
 
+        private IDisposable _mouseKeySubscription;
         private IDisposable _hotkeySubscription;
         
         public AbilityType GetAbilityType=>abilityType;
@@ -49,13 +57,27 @@ namespace Abilities
             Init();
 
             SetHotkey(_hotKey);
+            if (_useMouseButton)
+            {
+                SetMouseInput(_mouseButtonKey);
+                ShowMouseHint(_mouseButtonKey);
+            }
+           
 
+        }
 
+        private void ShowMouseHint(MouseButton mouseButtonKey)
+        {
+            _leftButtonHint.SetActive(false);
+            _rightButtonHint.SetActive(false);
+            if (mouseButtonKey == MouseButton.Left) _leftButtonHint.SetActive(true);
+            if (mouseButtonKey == MouseButton.Right) _rightButtonHint.SetActive(true);
         }
 
         private void OnDestroy()
         {
             _cooldownSubscription?.Dispose();
+            _hotkeySubscription?.Dispose();
             _hotkeySubscription?.Dispose();
         }
 
@@ -80,10 +102,15 @@ namespace Abilities
             {
                 _hotkeySubscription = Observable.EveryUpdate().Where(x => Input.GetKeyDown(hotkey))
                     .Subscribe(_ => _button.onClick.Invoke());
-
-               
+                
             }
             SetHotkeyHint(hotkey);
+        }
+
+        public void SetMouseInput(MouseButton mouseButton)
+        {
+            _hotkeySubscription = Observable.EveryUpdate().Where(x => Input.GetMouseButtonUp((int)mouseButton))
+                .Subscribe(_ => _button.onClick.Invoke());
         }
 
         private void OnAbilityActivated()
@@ -100,12 +127,14 @@ namespace Abilities
                 {
                     case KeyCode.LeftShift:
                         hotkeyHint.text = "Shift";
+                        hotkeyHint.gameObject.SetActive(true);
                         break;
                     case KeyCode.None :
                         hotkeyHint.text = "";
                         break;
                     default: 
                         hotkeyHint.text = newHotkey.ToString();
+                        hotkeyHint.gameObject.SetActive(true);
                         break;
                 }
             }

@@ -4687,7 +4687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2226977556743843574, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: _hotKey
-      value: 113
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2226977556743843574, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: abilityType
@@ -4705,7 +4705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4278881662436581122, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: _hotKey
-      value: 304
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4278881662436581122, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: hotkeyHint
