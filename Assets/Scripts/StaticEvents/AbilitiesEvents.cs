@@ -19,10 +19,10 @@ namespace StaticEvents
         private static readonly Subject<AbilityType> DeactivatedSubject = new Subject<AbilityType>();
         
         public static IObserver<AbilityType> ActivatedBroadcaster => ActivatedSubject;
-        public static IObserver<AbilityType> Activated => ActivatedSubject;
+        public static IObservable<AbilityType> Activated => ActivatedSubject;
         
         public static IObserver<AbilityType> ReleasedBroadcaster => ReleasedSubject;
-        public static IObserver<AbilityType> Released => ReleasedSubject;
+        public static IObservable<AbilityType> Released => ReleasedSubject;
         
         public static IObserver<AbilityType> DeactivatedBroadcaster => DeactivatedSubject;
         public static IObserver<AbilityType> Deactivated => DeactivatedSubject;

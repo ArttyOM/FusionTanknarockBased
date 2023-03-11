@@ -139,11 +139,7 @@ namespace FusionExamples.Tanknarok
 				}
 
 				Vector3 aimDirection = mouseCollisionPoint - _player.turretPosition;
-				if (Input.GetKey(KeyCode.Q))
-				{
-					_player.Shift();
-				}
-
+				
 				_aimDelta = new Vector2(aimDirection.x,aimDirection.z );
 			}
 			else if (Input.touchSupported)

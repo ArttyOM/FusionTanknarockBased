@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Abilities;
 using Fusion;
 using Tanknarok;
 using UnityEngine;
@@ -31,9 +32,8 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private LayerMask _pickupMask;
 		[SerializeField] private WeaponManager weaponManager;
 
-		[SerializeField] private GameObject _shiftButton; //Попробовал сюда кнопку пробросить
-
-		[SerializeField] private double AbilityShiftCoolDown; //В секундах
+		private PlayerDefaultAbilities abilities;
+		
 		
 		[Networked(OnChanged = nameof(OnStateChanged))]
 		public State state { get; set; }
@@ -142,10 +142,16 @@ namespace FusionExamples.Tanknarok
 			score = 0;
 		}
 
+
+		
 		public override void Spawned()
 		{
 			if (Object.HasInputAuthority)
+			{
 				local = this;
+				abilities = GetComponent<PlayerDefaultAbilities>();
+				abilities.BindAbilitiesModelsAndViews();
+			}
 
 			// Getting this here because it will revert to -1 if the player disconnects, but we still want to remember the Id we were assigned for clean-up purposes
 			playerID = Object.InputAuthority;
@@ -209,8 +215,6 @@ namespace FusionExamples.Tanknarok
 
 			if (moveDirection.magnitude > 0.1f)
 				_lastMoveDirection = moveDirection;
-
-			if (AbilityShiftCoolDown > 0) AbilityShiftCoolDown -= Time.deltaTime; //вычитываем время
 		}
 
 		private void SetMaterial()
@@ -267,19 +271,6 @@ namespace FusionExamples.Tanknarok
 				return;
 
 			_cc.Move(new Vector3(moveDirection.x,0,moveDirection.y));
-		}
-
-		public void Shift()
-        {
-			if (!isActivated)
-				return;
-			if (AbilityShiftCoolDown > 0) return;
-			AbilityShiftCoolDown = 3;
-			var _current = _cc.ReadPosition();
-			_current.x -= aimDirection.x * 2;
-			_current.z -= aimDirection.y * 2;
-			_cc.TeleportToPosition(_current);
-			_shiftButton.active = false; //Попробовал получить доступ к кнопке абилки, но дальше хз какqa
 		}
 
 		/// <summary>
