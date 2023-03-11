@@ -1,3 +1,5 @@
+using System;
+using UniRx;
 using UnityEngine;
 
 namespace Abilities
@@ -9,7 +11,21 @@ namespace Abilities
         private float _maxCooldown;
         private float _currentCooldown;
 
-        public void Activate()
+        private IDisposable ActivateSubscriber;
+        private AbilityView _view;
+            
+        public AbilityView View
+        {
+            get { return _view;}
+            set
+            {
+                _view = value;
+                ActivateSubscriber?.Dispose();
+                ActivateSubscriber = _view.AbilityActivated.Subscribe(_=> Activate());
+            }
+        }
+
+        private void Activate()
         {
             Debug.LogWarning("Blink Activated");
         }

@@ -1,3 +1,5 @@
+using System;
+using UniRx;
 using UnityEngine;
 
 namespace Abilities
@@ -8,8 +10,22 @@ namespace Abilities
 
         private float _maxCooldown;
         private float _currentCooldown;
+        
+        private IDisposable ActivateSubscriber;
+        private AbilityView _view;
+        public AbilityView View
+        {
+            get { return _view;}
+            set
+            {
+                _view = value;
+                ActivateSubscriber?.Dispose();
+                ActivateSubscriber = _view.AbilityActivated
+                    .Subscribe(_=> Activate());
+            }
+        }
 
-        public void Activate()
+        private void Activate()
         {
             Debug.LogWarning("Fireball Activated");
         }

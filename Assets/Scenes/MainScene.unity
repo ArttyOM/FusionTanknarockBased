@@ -4821,6 +4821,10 @@ PrefabInstance:
       value: -53.9
       objectReference: {fileID: 0}
     - target: {fileID: 2226977556743843574, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
+      propertyPath: _hotKey
+      value: 113
+      objectReference: {fileID: 0}
+    - target: {fileID: 2226977556743843574, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: abilityType
       value: 0
       objectReference: {fileID: 0}
@@ -4835,9 +4839,13 @@ PrefabInstance:
 '
       objectReference: {fileID: 0}
     - target: {fileID: 4278881662436581122, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
+      propertyPath: _hotKey
+      value: 304
+      objectReference: {fileID: 0}
+    - target: {fileID: 4278881662436581122, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: hotkeyHint
       value: 
-      objectReference: {fileID: 2053547735}
+      objectReference: {fileID: 2065643107}
     - target: {fileID: 4278881662436581122, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
       propertyPath: abilityName
       value: 
@@ -5016,6 +5024,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2065643107 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2707822588562093440, guid: 08ffdfb6bd06b604885c3ebb802d5f16, type: 3}
+  m_PrefabInstance: {fileID: 2053547733}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &2072097778

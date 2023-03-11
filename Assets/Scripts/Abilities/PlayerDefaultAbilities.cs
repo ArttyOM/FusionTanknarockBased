@@ -14,17 +14,35 @@ namespace Abilities
 
         private BlinkAbility _blinkAbility = new BlinkAbility();
         private FireBallAbility _fireBallAbility = new FireBallAbility();
-        
+
         public void BindAbilitiesModelsAndViews()
         {
-            _activated.Where(x => x==AbilityType.Escape)
-                .Subscribe(_ => _blinkAbility.Activate());
+            var views =FindObjectsOfType<AbilityView>();
+            for (int i = 0; i < views.Length; i++)
+            {
+                switch (views[i].GetAbilityType)
+                {
+                    case AbilityType.Escape:
+                        _blinkAbility.View = views[i];
+                        break;
+                    case AbilityType.Default:
+                        _fireBallAbility.View = views[i];
+                        break;
+                    case AbilityType.Melee:
+                        break;
+                    default: break;
+                }
+            }
             
-            _activated.Where(x => x==AbilityType.Default)
-                .Subscribe(_ => _fireBallAbility.Activate());
+            // _activated.Where(x => x==AbilityType.Escape)
+            //     .Subscribe(_ => _blinkAbility.Activate());
+            
+            // _activated.Where(x => x==AbilityType.Default)
+            //     .Subscribe(_ => _fireBallAbility.Activate());
             
         }
-
+        
+        
         // public void InstallWeapon(PowerupElement powerup)
         // {
         //     int weaponIndex = GetWeaponIndex(powerup.powerupType);
