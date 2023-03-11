@@ -125,6 +125,9 @@ namespace FusionExamples.Tanknarok
 			_cc = GetComponent<NetworkCharacterControllerPrototype>();
 			_collider = GetComponentInChildren<Collider>();
 			_hitBoxRoot = GetComponent<HitboxRoot>();
+			
+			abilities = GetComponent<PlayerDefaultAbilities>();
+			abilities.InitAbilities(_cc);
 		}
 
 		private NetworkSceneLoader GetLevelManager()
@@ -141,15 +144,14 @@ namespace FusionExamples.Tanknarok
 			life = MAX_HEALTH;
 			score = 0;
 		}
-
-
 		
 		public override void Spawned()
 		{
+			abilities = GetComponent<PlayerDefaultAbilities>();
+
 			if (Object.HasInputAuthority)
 			{
 				local = this;
-				abilities = GetComponent<PlayerDefaultAbilities>();
 				abilities.BindAbilitiesModelsAndViews();
 			}
 
@@ -263,6 +265,8 @@ namespace FusionExamples.Tanknarok
 		{
 			this.moveDirection = moveDirection;
 			this.aimDirection = aimDirection;
+
+			abilities.SetDirections(moveDirection,aimDirection);
 		}
 
 		public void Move()

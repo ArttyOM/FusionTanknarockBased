@@ -12,8 +12,11 @@ namespace Abilities
     {
         IObservable<AbilityType> _activated = AbilitiesEvents.Activated;
 
-        private BlinkAbility _blinkAbility = new BlinkAbility();
+        [SerializeField] private BlinkAbility _blinkAbilityPattern;// = new BlinkAbility();
+        private BlinkAbility _blinkAbility;
         private FireBallAbility _fireBallAbility = new FireBallAbility();
+        
+        
 
         public void BindAbilitiesModelsAndViews()
         {
@@ -48,5 +51,15 @@ namespace Abilities
         //     int weaponIndex = GetWeaponIndex(powerup.powerupType);
         //     ActivateWeapon(powerup.weaponInstallationType, weaponIndex);
         // }
+        public void InitAbilities(NetworkCharacterControllerPrototype characterController)
+        {
+            _blinkAbility = Instantiate(_blinkAbilityPattern);
+            _blinkAbility.Init(characterController);
+        }
+
+        public void SetDirections(Vector2 moveDirection, Vector2 aimDirection)
+        {
+            _blinkAbility.SetDirections(moveDirection, aimDirection);
+        }
     }
 }

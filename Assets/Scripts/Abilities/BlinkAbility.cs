@@ -1,19 +1,34 @@
 using System;
 using UniRx;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace Abilities
 {
-    public class BlinkAbility : UnityEngine.Object, IAbility 
+    [CreateAssetMenu(fileName = "BlinkAbilityPattern", menuName = "Abilities/BlinkAbility", order = 1)]
+    public class BlinkAbility : ScriptableObject, IAbility 
     {
         public readonly AbilityType abilityType = AbilityType.Escape;
 
-        private float _maxCooldown;
-        private float _currentCooldown;
+        [SerializeField] private float _maxCooldown = 3;
+        private float _currentCooldown = 0;
 
         private IDisposable ActivateSubscriber;
         private AbilityView _view;
-            
+
+        private bool _canBeReleased = false;
+        
+        private NetworkCharacterControllerPrototype _cc;
+        private Vector2 _aimDirection;
+        private Vector2 _moveDirection;
+
+        public void Init(NetworkCharacterControllerPrototype characterController)
+        {
+            _cc = characterController;
+
+            _canBeReleased = true;
+        }
+        
         public AbilityView View
         {
             get { return _view;}
@@ -22,25 +37,47 @@ namespace Abilities
                 _view = value;
                 ActivateSubscriber?.Dispose();
                 ActivateSubscriber = _view.AbilityActivated.Subscribe(_=> Activate());
+                
             }
         }
 
-        private void Activate()
+        private void Release()
         {
-            Debug.LogWarning("Blink Activated");
+            Shift();
+            _canBeReleased = false;
+            _view.SetCooldown(_maxCooldown);
+            Observable.Timer(TimeSpan.FromSeconds((double) _maxCooldown))
+                .Subscribe(_ => _canBeReleased = true);
         }
         
-        // public void Shift()
-        // {
-        //     if (!isActivated)
-        //         return;
-        //     if (AbilityShiftCoolDown > 0) return;
-        //     AbilityShiftCoolDown = 3;
-        //     var _current = _cc.ReadPosition();
-        //     _current.x -= aimDirection.x * 2;
-        //     _current.z -= aimDirection.y * 2;
-        //     _cc.TeleportToPosition(_current);
-        //     _shiftButton.active = false; //���������� �������� ������ � ������ ������, �� ������ �� ���qa
-        // }
+        private void Activate()
+        {
+            if (_canBeReleased)
+            {
+                Debug.LogWarning("Blink Activated and can be released");
+            }
+            else
+            {
+                Debug.LogWarning("Blink Activated but on cooldown");
+            }
+
+            Release();
+        }
+        
+        private void Shift()
+         {
+             if (!_canBeReleased)
+                 return;
+             var _current = _cc.ReadPosition();
+             _current.x -= _aimDirection.x * 2;
+             _current.z -= _aimDirection.y * 2;
+             _cc.TeleportToPosition(_current);
+         }
+
+        public void SetDirections(Vector2 moveDirection, Vector2 aimDirection)
+        {
+            this._aimDirection = aimDirection;
+            this._moveDirection = moveDirection;
+        }
     }
 }
