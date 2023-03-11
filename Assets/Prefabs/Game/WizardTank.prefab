@@ -233,7 +233,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2293618908238561316}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47e89bfba66d3c14585fec1776a5a7c8, type: 3}
   m_Name: 
@@ -514,8 +514,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2824c1950e172434593d63aa5ea6abdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shakeAmountByAxis: {x: -0.02, y: 0.06, z: -0.02}
-  shakeSpeed: 40
+  shakeAmountByAxis: {x: -0.01, y: 0.01, z: -0.01}
+  shakeSpeed: 20
 --- !u!1 &7042979508877330587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,7 +1645,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8904131417722953992, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: _rateOfFire
-      value: 3
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904131417722953992, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+      propertyPath: _infiniteAmmo
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8904131417722953992, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
       propertyPath: _projectilePrefab
