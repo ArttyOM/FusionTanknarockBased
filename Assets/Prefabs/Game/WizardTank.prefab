@@ -641,6 +641,8 @@ GameObject:
   - component: {fileID: 8616232291554802440}
   - component: {fileID: 1723606642065551448}
   - component: {fileID: 3407055641847980225}
+  - component: {fileID: 3581861131137360136}
+  - component: {fileID: 8066412284909160881}
   m_Layer: 8
   m_Name: WizardTank
   m_TagString: Untagged
@@ -693,6 +695,8 @@ MonoBehaviour:
   - {fileID: 868463730390139289}
   - {fileID: 4937990569053503600}
   - {fileID: 3407055641847980225}
+  - {fileID: 3581861131137360136}
+  - {fileID: 8066412284909160881}
   - {fileID: 3457447250671291453}
   - {fileID: 3456142216153293605}
   - {fileID: 346593213666910495}
@@ -1008,6 +1012,33 @@ MonoBehaviour:
   rotationSpeed: 15
   _IsGrounded: 0
   _Velocity: {x: 0, y: 0, z: 0}
+--- !u!114 &3581861131137360136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7917003752575662290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32dc76c01c78fec4c81b593ad80a1907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+  _maxCooldown: 3
+--- !u!114 &8066412284909160881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7917003752575662290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea3ba2b6601479faba11603291891c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
 --- !u!1 &8041608635261517176
 GameObject:
   m_ObjectHideFlags: 0
@@ -1238,6 +1269,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 7911653039066033918}
     m_Modifications:
     - target: {fileID: 344211791219361651, guid: 8ff0f46fc7dbb2448b962b45e072a6c6, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -6099749113586493436, guid: d6473df0ee25e9c4c9b89000ff2f3292, type: 3}
+    - target: {fileID: 344211791219361651, guid: 8ff0f46fc7dbb2448b962b45e072a6c6, type: 3}
       propertyPath: m_EnableGPUInstancing
       value: 0
       objectReference: {fileID: 0}
@@ -1257,6 +1292,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2184127068953936302, guid: 8ff0f46fc7dbb2448b962b45e072a6c6, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 1420180616690215640, guid: d6473df0ee25e9c4c9b89000ff2f3292, type: 3}
     - target: {fileID: 2184127068953936302, guid: 8ff0f46fc7dbb2448b962b45e072a6c6, type: 3}
       propertyPath: m_EnableGPUInstancing
       value: 0
@@ -1315,7 +1354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7663626851215297795, guid: 8ff0f46fc7dbb2448b962b45e072a6c6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ff0f46fc7dbb2448b962b45e072a6c6, type: 3}
@@ -1691,6 +1730,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+--- !u!4 &8866115795160154240 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
+  m_PrefabInstance: {fileID: 6915406073108358877}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2623805786298927061 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8904131417722953992, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
@@ -1702,11 +1746,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7148428fe6e4d1e93495278a1623a99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &8866115795160154240 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2662384361004050013, guid: 86bd09311ff04004d9a475344b051bae, type: 3}
-  m_PrefabInstance: {fileID: 6915406073108358877}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7814438951677196920
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1825,7 +1864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4811412420932910109, guid: 90d330b62c3156c47a8359096a75bdd7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5398060461185976911, guid: 90d330b62c3156c47a8359096a75bdd7, type: 3}
       propertyPath: m_Mesh
