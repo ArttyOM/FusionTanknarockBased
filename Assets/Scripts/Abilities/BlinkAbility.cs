@@ -22,6 +22,11 @@ namespace Abilities
         private Vector2 _aimDirection;
         private Vector2 _moveDirection;
 
+        private void Awake()
+        {
+            _cc = GetComponent<NetworkCharacterControllerPrototype>();
+        }
+        
         public void Init(NetworkCharacterControllerPrototype characterController)
         {
             _cc = characterController;
