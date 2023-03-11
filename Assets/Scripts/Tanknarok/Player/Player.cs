@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Abilities;
 using Fusion;
 using Tanknarok;
 using UnityEngine;
@@ -29,6 +31,9 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private float _respawnTime;
 		[SerializeField] private LayerMask _pickupMask;
 		[SerializeField] private WeaponManager weaponManager;
+
+		private PlayerDefaultAbilities abilities;
+		
 		
 		[Networked(OnChanged = nameof(OnStateChanged))]
 		public State state { get; set; }
@@ -120,6 +125,9 @@ namespace FusionExamples.Tanknarok
 			_cc = GetComponent<NetworkCharacterControllerPrototype>();
 			_collider = GetComponentInChildren<Collider>();
 			_hitBoxRoot = GetComponent<HitboxRoot>();
+			
+			abilities = GetComponent<PlayerDefaultAbilities>();
+			abilities.InitAbilities(_cc);
 		}
 
 		private NetworkSceneLoader GetLevelManager()
@@ -136,11 +144,16 @@ namespace FusionExamples.Tanknarok
 			life = MAX_HEALTH;
 			score = 0;
 		}
-
+		
 		public override void Spawned()
 		{
+			abilities = GetComponent<PlayerDefaultAbilities>();
+
 			if (Object.HasInputAuthority)
+			{
 				local = this;
+				abilities.BindAbilitiesModelsAndViews();
+			}
 
 			// Getting this here because it will revert to -1 if the player disconnects, but we still want to remember the Id we were assigned for clean-up purposes
 			playerID = Object.InputAuthority;
@@ -252,6 +265,8 @@ namespace FusionExamples.Tanknarok
 		{
 			this.moveDirection = moveDirection;
 			this.aimDirection = aimDirection;
+
+			abilities.SetDirections(moveDirection,aimDirection);
 		}
 
 		public void Move()

@@ -70,11 +70,11 @@ namespace FusionExamples.Tanknarok
 					_frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_PRIMARY;
 				}
 
-				if ( _secondaryFire )
-				{
-					_secondaryFire = false;
-					_frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_SECONDARY;
-				}
+				// if ( _secondaryFire )
+				// {
+				// 	_secondaryFire = false;
+				// 	_frameworkInput.Buttons |= NetworkInputData.BUTTON_FIRE_SECONDARY;
+				// }
 
 				if (ToggleReady)
 				{
@@ -99,9 +99,10 @@ namespace FusionExamples.Tanknarok
 		private void Update()
 		{
 			ToggleReady = ToggleReady || Input.GetKeyDown(KeyCode.R);
-
+			
 			if (Input.mousePresent)
 			{
+				
 				if (Input.GetMouseButton(0) )
 					_primaryFire = true;
 
@@ -138,6 +139,7 @@ namespace FusionExamples.Tanknarok
 				}
 
 				Vector3 aimDirection = mouseCollisionPoint - _player.turretPosition;
+				
 				_aimDelta = new Vector2(aimDirection.x,aimDirection.z );
 			}
 			else if (Input.touchSupported)
