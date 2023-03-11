@@ -30,10 +30,9 @@ namespace FusionExamples.Tanknarok
 		[SerializeField] private float _respawnTime;
 		[SerializeField] private LayerMask _pickupMask;
 		[SerializeField] private WeaponManager weaponManager;
+		[SerializeField] private GameObject _ability;
 
-		[SerializeField] private GameObject _shiftButton; //Попробовал сюда кнопку пробросить
-
-		[SerializeField] private double AbilityShiftCoolDown; //В секундах
+		[SerializeField] public double AbilityShiftCoolDown; //В секундах
 		
 		[Networked(OnChanged = nameof(OnStateChanged))]
 		public State state { get; set; }
@@ -210,7 +209,16 @@ namespace FusionExamples.Tanknarok
 			if (moveDirection.magnitude > 0.1f)
 				_lastMoveDirection = moveDirection;
 
-			if (AbilityShiftCoolDown > 0) AbilityShiftCoolDown -= Time.deltaTime; //вычитываем время
+			if (AbilityShiftCoolDown > 0)
+			{
+				AbilityShiftCoolDown -= Time.deltaTime; //вычитываем время
+				var cooldown = _ability.GetComponentsInChildren<ShiftCoolDown>()[0];
+				cooldown?.SetCoolDown(1 - ((float)AbilityShiftCoolDown / 3));
+			} else
+            {
+				var cooldown = _ability.GetComponentsInChildren<ShiftCoolDown>()[0];
+				cooldown?.SetCoolDown(1 - ((float)AbilityShiftCoolDown / 3));
+			}
 		}
 
 		private void SetMaterial()
@@ -275,11 +283,14 @@ namespace FusionExamples.Tanknarok
 				return;
 			if (AbilityShiftCoolDown > 0) return;
 			AbilityShiftCoolDown = 3;
+
+			var cooldown = _ability.GetComponentsInChildren<ShiftCoolDown>()[0];
+			cooldown?.SetCoolDown(1 - ((float)AbilityShiftCoolDown / 3));
 			var _current = _cc.ReadPosition();
 			_current.x -= aimDirection.x * 2;
 			_current.z -= aimDirection.y * 2;
 			_cc.TeleportToPosition(_current);
-			_shiftButton.active = false; //Попробовал получить доступ к кнопке абилки, но дальше хз какqa
+			//_shiftButton.active = false; //Попробовал получить доступ к кнопке абилки, но дальше хз какqa
 		}
 
 		/// <summary>
