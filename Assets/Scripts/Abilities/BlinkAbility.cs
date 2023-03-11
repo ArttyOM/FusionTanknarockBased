@@ -1,12 +1,12 @@
 using System;
+using Fusion;
 using UniRx;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
 namespace Abilities
 {
-    [CreateAssetMenu(fileName = "BlinkAbilityPattern", menuName = "Abilities/BlinkAbility", order = 1)]
-    public class BlinkAbility : ScriptableObject, IAbility 
+    public class BlinkAbility : NetworkBehaviour, IAbility 
     {
         public readonly AbilityType abilityType = AbilityType.Escape;
 
