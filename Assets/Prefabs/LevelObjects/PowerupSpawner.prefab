@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 109ae569ed34b4f4ea2e41b839c1aae8, type: 2}
+  - {fileID: -2365757557893966856, guid: 468ee67d204d2ac4b932fa2756819656, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -341,9 +341,9 @@ MonoBehaviour:
   _renderer: {fileID: 2778806105166479936}
   _meshFilter: {fileID: 104913371831367306}
   _rechargeCircle: {fileID: 4521411879244340779}
-  _mainPowerupColor: {r: 1, g: 0.70980394, b: 0, a: 1}
-  _specialPowerupColor: {r: 0, g: 0.41568628, b: 1, a: 1}
-  _buffPowerupColor: {r: 0.16078432, g: 1, b: 0, a: 1}
+  _mainPowerupColor: {r: 0.9882353, g: 0.18431373, b: 0.12941177, a: 1}
+  _specialPowerupColor: {r: 0.9882353, g: 0.18431373, b: 0.12941177, a: 1}
+  _buffPowerupColor: {r: 0.9882353, g: 0.18431373, b: 0.12941177, a: 1}
   _isRespawning:
     _value: 0
   _activePowerupIndex: 0
