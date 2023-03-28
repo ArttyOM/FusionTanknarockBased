@@ -17,6 +17,8 @@ namespace FusionExamples.Tanknarok
 		public static bool fetchInput = true;
 		public bool ToggleReady { get; set; }
 
+		private NetworkInputDataAdapter _networkInputDataAdapter = new NetworkInputDataAdapter();
+		
 		private Player _player;
 		private NetworkInputData _frameworkInput = new NetworkInputData();
 		private Vector2 _moveDelta;
@@ -59,10 +61,12 @@ namespace FusionExamples.Tanknarok
 			if (_player!=null && _player.Object!=null && _player.state == Player.State.Active && fetchInput)
 			{
 				// Fill networked input struct with input data
-
-				_frameworkInput.aimDirection = _aimDelta.normalized;
 				
-				_frameworkInput.moveDirection = _moveDelta.normalized;
+				_networkInputDataAdapter.ConvertAimDirectionToNetworkInput(in _aimDelta,
+					out _frameworkInput.aimDirectionX , out _frameworkInput.aimDirectionY);
+
+				_networkInputDataAdapter.ConvertMoveDirectionToNetworkInput(in _moveDelta,	
+					out _frameworkInput.moveDirectionX, out _frameworkInput.moveDirectionY);
 
 				if ( _primaryFire )
 				{
@@ -202,7 +206,7 @@ namespace FusionExamples.Tanknarok
 			Vector2 direction = default;
 			if (GetInput(out NetworkInputData input))
 			{
-				direction = input.moveDirection.normalized;
+				direction = _networkInputDataAdapter.GetMoveDirection(input);
 
 				if (input.IsDown(NetworkInputData.BUTTON_FIRE_PRIMARY))
 				{
@@ -220,7 +224,7 @@ namespace FusionExamples.Tanknarok
 				}
 
 				// We let the NetworkCharacterController do the actual work
-				_player.SetDirections(direction, input.aimDirection.normalized);
+				_player.SetDirections(direction, _networkInputDataAdapter.GetAimDirection(input));
 			}
 			_player.Move();
 		}
@@ -238,33 +242,5 @@ namespace FusionExamples.Tanknarok
 		public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) { }
 		public void OnSceneLoadDone(NetworkRunner runner) { }
 		public void OnSceneLoadStart(NetworkRunner runner) { }
-	}
-
-	/// <summary>
-	/// Our custom definition of an INetworkStruct. Keep in mind that
-	/// * bool does not work (C# does not define a consistent size on different platforms)
-	/// * Must be a top-level struct (cannot be a nested class)
-	/// * Stick to primitive types and structs
-	/// * Size is not an issue since only modified data is serialized, but things that change often should be compact (e.g. button states)
-	/// </summary>
-	public struct NetworkInputData : INetworkInput
-	{
-		public const uint BUTTON_FIRE_PRIMARY = 1 << 0;
-		public const uint BUTTON_FIRE_SECONDARY = 1 << 1;
-		public const uint READY = 1 << 6;
-
-		public uint Buttons;
-		public Vector2 aimDirection;
-		public Vector2 moveDirection;
-
-		public bool IsUp(uint button)
-		{
-			return IsDown(button) == false;
-		}
-
-		public bool IsDown(uint button)
-		{
-			return (Buttons & button) == button;
-		}
 	}
 }
