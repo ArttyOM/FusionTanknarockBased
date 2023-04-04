@@ -141,7 +141,7 @@ namespace FusionExamples.Tanknarok
 			runner.Spawn(_projectilePrefab, exit.position, exit.rotation, owner, (runner, obj) =>
 			{
 				obj.GetComponent<Projectile>().InitNetworkState(ownerVelocity);
-			}, key );
+			});
 		}
 
 		private Transform GetExitPoint()
