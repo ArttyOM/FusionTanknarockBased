@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Fusion;
 using UnityEngine;
 
@@ -168,50 +169,69 @@ namespace FusionExamples.Tanknarok
 			}
 		}
 
-		private void MoveBullet()
+		private void DetonateIfCollision(out bool isDetonated, out LagCompensatedHit hit)
 		{
-
 			Transform xfrm = transform;
 			float dt = Runner.DeltaTime;
 			Vector3 vel = velocity;
 			float speed = vel.magnitude;
 			Vector3 pos = xfrm.position;
+			
+			vel.y += dt * _bulletSettings.gravity;
+			// We move the origin back from the actual position to make sure we can't shoot through things even if we start inside them
+			Vector3 dir = vel.normalized;
 
-			if (!destroyed)
+			LagCompensatedHit hitInfo;
+			if (Runner.LagCompensation.Raycast(pos - 0.5f * dir, dir, Mathf.Max(_bulletSettings.radius, speed * dt),
+				    Object.InputAuthority, out hitInfo, _bulletSettings.hitMask.value, HitOptions.IncludePhysX))
 			{
-				if (fadeTimer.Expired(Runner))
-				{
-					Detonate(transform.position);
-				}
-				else
-				{
-					vel.y += dt * _bulletSettings.gravity;
+				hit = hitInfo;
+				Detonate(hitInfo.Point);
+				isDetonated = true;
+			}
+			else
+			{
+				hit = hitInfo;
+				isDetonated = false;
+			}
+		}
 
-					// We move the origin back from the actual position to make sure we can't shoot through things even if we start inside them
-					Vector3 dir = vel.normalized;
-					if (Runner.LagCompensation.Raycast(pos -0.5f*dir, dir, Mathf.Max(_bulletSettings.radius, speed * dt), Object.InputAuthority, out var hitinfo, _bulletSettings.hitMask.value, HitOptions.IncludePhysX))
-					{
-						Detonate(hitinfo.Point);
+		private void DetonateIfTimer(out bool isDetonated)
+		{
+			if (fadeTimer.Expired(Runner))
+			{
+				isDetonated = true;
+				Detonate(transform.position);
+			}
+			else isDetonated = false;
+		}
+		
+		private void MoveBullet()
+		{
+			DetonateIfTimer(out bool isDetonatedByTimer);
 
-						vel = Vector3.zero;
-						pos = hitinfo.Point;
-					}
-				}
+			bool isDetonatedByCollision = false;
+			if (!isDetonatedByTimer)
+			{
+				DetonateIfCollision(out isDetonatedByCollision, out _);
 			}
 
-			// If the bullet is destroyed, we stop the movement so we don't get a flying explosion
-			if (destroyed)
+			if (!isDetonatedByTimer && !isDetonatedByCollision)
 			{
-				vel = Vector3.zero;
-				dt = 0;
+				Transform xfrm = transform;
+				Vector3 vel = velocity;
+				Vector3 pos = xfrm.position;
+				float dt = Runner.DeltaTime;
+				
+				vel.y += dt * _bulletSettings.gravity;
+				velocity = vel;
+				
+				pos += dt * velocity;
+
+				xfrm.position = pos;
+				if(vel.sqrMagnitude>0)
+					_bulletVisualParent.forward = vel.normalized;
 			}
-
-			velocity = vel;
-			pos += dt * velocity;
-
-			xfrm.position = pos;
-			if(vel.sqrMagnitude>0)
-				_bulletVisualParent.forward = vel.normalized;
 		}
 
 		/// <summary>
