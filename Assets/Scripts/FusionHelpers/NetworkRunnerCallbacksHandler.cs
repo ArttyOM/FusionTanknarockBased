@@ -66,8 +66,8 @@ namespace FusionExamples.FusionHelpers
             //_runner.name = name;
             _runner.ProvideInput = mode != GameMode.Server;
 
-            // if (_pool == null)
-            //     _pool = gameObject.AddComponent<FusionObjectPoolRoot>();
+            if (_pool == null)
+                _pool = gameObject.AddComponent<FusionObjectPoolRoot>();
 
             await _runner.StartGame(new StartGameArgs
             {
