@@ -81,8 +81,12 @@ namespace FusionExamples.Tanknarok
 			_visual = GetComponentInChildren<IVisual>(true);
 		}
 
-		public override void InitNetworkState(Vector3 ownerVelocity)
+		public override void InitNetworkState(Vector3 ownerVelocity, Vector3 exitPosition, Quaternion exitRotation)
 		{
+			var startPoint = transform;
+			startPoint.position = exitPosition;
+			startPoint.rotation = exitRotation;
+			
 			Debug.Log($"Initialising InstantHit predictedspawn={Object.IsPredictedSpawn}");
 			life = TickTimer.CreateFromSeconds(Runner, _settings.timeToFade);
 

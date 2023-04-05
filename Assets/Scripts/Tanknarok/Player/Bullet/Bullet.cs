@@ -62,6 +62,11 @@ namespace FusionExamples.Tanknarok
 		[Networked]
 		public TickTimer networkedLifeTimer { get; set; }
 		private TickTimer _predictedLifeTimer;
+		
+		private Vector3 _startPointPosition;
+		private Rotation _startPointRotation;
+		private Transform _thisTransform ;
+		
 		private TickTimer lifeTimer
 		{
 			get => Object.IsPredictedSpawn ? _predictedLifeTimer : networkedLifeTimer;
@@ -107,8 +112,14 @@ namespace FusionExamples.Tanknarok
 		/// PreSpawn is invoked directly when Spawn() is called, before any network state is shared, so this is where we initialize networked properties.
 		/// </summary>
 		/// <param name="ownervelocity"></param>
-		public override void InitNetworkState(Vector3 ownervelocity)
+		public override void InitNetworkState(Vector3 ownervelocity, Vector3 exitPosition, Quaternion exitRotation)
 		{
+			_startPointPosition = exitPosition;
+			_startPointRotation = exitRotation;
+			_thisTransform = transform;
+			_thisTransform.position = _startPointPosition;
+			_thisTransform.rotation = _startPointRotation;
+			
 			lifeTimer = TickTimer.CreateFromSeconds(Runner, _bulletSettings.timeToLive + _bulletSettings.timeToFade);
 			fadeTimer = TickTimer.CreateFromSeconds(Runner, _bulletSettings.timeToFade);
 

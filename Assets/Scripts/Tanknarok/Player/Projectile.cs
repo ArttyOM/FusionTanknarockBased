@@ -9,7 +9,7 @@ namespace FusionExamples.Tanknarok
 		private Vector3 _interpolateFrom;
 		private Vector3 _interpolateTo;
 		private NetworkTransform _nt;
-		public abstract void InitNetworkState(Vector3 ownerVelocity);
+		public abstract void InitNetworkState(Vector3 ownerVelocity, Vector3 exitPosition, Quaternion exitRotation);
 
 		/// <summary>
 		/// The following methods implement support for Fusions spawn prediction.
