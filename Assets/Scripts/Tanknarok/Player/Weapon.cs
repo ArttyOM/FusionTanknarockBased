@@ -140,7 +140,7 @@ namespace FusionExamples.Tanknarok
 			var key = new NetworkObjectPredictionKey {Byte0 = (byte) owner.RawEncoded, Byte1 = (byte) runner.Simulation.Tick};
 			runner.Spawn(_projectilePrefab, exit.position, exit.rotation, owner, (runner, obj) =>
 			{
-				obj.GetComponent<Projectile>().InitNetworkState(ownerVelocity);
+				obj.GetComponent<Projectile>().InitNetworkState(ownerVelocity, exit.position, exit.rotation);
 			}, key );
 		}
 
